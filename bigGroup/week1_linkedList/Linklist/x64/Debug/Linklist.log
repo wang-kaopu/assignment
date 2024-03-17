@@ -1,3 +1,0 @@
-﻿  main.cpp
-D:\Code\Assignment\Linklist\Linklist\head.h(10,2): warning C4091: “typedef ”: 没有声明变量时忽略“LNodeD”的左侧
-  Linklist.vcxproj -> D:\Code\Assignment\Linklist\x64\Debug\Linklist.exe
