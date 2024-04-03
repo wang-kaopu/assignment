@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="login">
+    用户名<input type="text" v-model="username">{{username}}
+    密码<input type="text" v-model="password">{{password}}
+    <input type="button" value="登录" @click="send()">
+</div>
+<script>
+    new Vue({
+        el:"#login",
+        data:{
+            username:null,
+            password:null,
+            listUrl:null
+        },
+        methods:{
+            send:function (){
+                let user={};
+                user.username=this.username;
+                user.password=this.password;
+                let userString = JSON.stringify(user);
+                console.log(userString);
+                axios.post("http://localhost:8080/week3/loginServlet",userString).then(
+                    (result)=>{
+                        if(result.status===200){
+                            window.location.href="http://localhost:8080/week3/view.html";
+                        }
+                    }
+                )
+                }
+            }
+        }
+    )
+</script>
+</body>
+</html>
