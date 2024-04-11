@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="register">
+    <h5>注册</h5>
+    邮箱地址：<input type="text" v-model="email"><br>
+    密码：<input type="text" v-model="password"><br>
+    姓名：<input type="text" v-model="studentName"><br>
+    年级：<input type="radio" value="1" v-model="studentGrade">大一
+    <input type="radio" value="2" v-model="studentGrade">大二
+    <input type="radio" value="3" v-model="studentGrade">大三
+    <input type="radio" value="4" v-model="studentGrade">大四<br>
+    <input type="button" value="提交" @click="register()">
+</div>
+</body>
+<script>
+    function sleep(time){
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+    async function runSleep(time)
+    {
+        await sleep(time);
+    }
+    new Vue({
+        el:"#register",
+        data:{
+            email:null,
+            password:null,
+            studentName:null,
+            studentGrade:null
+        },
+        methods:{
+            register:function(){
+                let user={};
+                user.method="register";
+                user.email=this.email;
+                user.password=this.password;
+                user.studentName=this.studentName;
+                user.studentGrade=this.studentGrade;
+                let userString = JSON.stringify(user);
+                console.log(userString);
+                axios.post("http://localhost:8080/week5/BaseServlet",userString).then(
+                    (result)=>{
+                    //     console.log(result);
+                         console.log(result.data);
+                    //     alert(result.data);
+                    if(result.status===200 && result.data.code===1){
+                        alert("注册成功，您的ID是："+result.data.personID);
+                        window.location.href="http://localhost:8080/week5/login.html";
+                    }else{
+                        alert("注册失败，请重试");
+                    }
+                    }
+                )
+            }
+        }
+    })
+</script>
+</html>

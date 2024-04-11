@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Homepage</title>
+</head>
+<body>
+    <h4>
+        学生主页
+    </h4>
+    <div id="studentHomepage">
+        <input type="button" value="课程学习" @click="toStudy()">
+        <input type="button" value="浏览课程" @click="toBrowseCourses()">
+        <input type="button" value="个人信息" @click="toStudentInfo()">
+    </div>
+</body>
+<script>
+    new Vue({
+        el:"#studentHomepage",
+        data:{
+            studentID:null
+        },
+        methods:{
+            toBrowseCourses:function (){
+                window.location.href="http://localhost:8080/week5/browseCourses.html";
+            },
+            toStudentInfo:function() {
+                window.location.href = "http://localhost:8080/week5/studentInfo.html";
+            },
+            toStudy:function (){
+                window.location.href="http://localhost:8080/week5/study.html";
+            }
+        }
+    })
+</script>
+</html>

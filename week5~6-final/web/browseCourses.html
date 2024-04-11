@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="browseCourses">
+
+</div>
+<script>
+    new Vue({
+        el:"#browseCourses",
+        data:{
+            studentID:null
+        },
+        methods:{
+
+        }
+    }).mounted(
+        ()=>{
+            let methodName = "browseCourse";
+            let JSONString = JSON.stringify(methodName);
+            axios.post("http://localhost:8080/week5/BaseServlet", JSONString).then(
+                (result)=>{
+                    this.studentID=result.data.studentID;
+            })
+    })
+</script>
+</body>
+</html>

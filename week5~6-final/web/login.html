@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+<!--    <script src="js/login.js"></script>-->
+</head>
+<body>
+    <div id="login">
+        学号/工号：<input type="text" v-model="personID"><br>
+        密码：<input type="text" v-model="password"><br>
+        <input type="button" value="学生登录" @click="studentLogin()">
+        <input type="button" value="教师登录" @click="teacherLogin()"><br>
+        尚无账号？<input type="button" value="注册" @click="toRegister()"><br>
+    </div>
+    <script>
+        new Vue({
+                el:"#login",
+                data:{
+                    personID:null,
+                    password:null
+                },
+                methods:{
+                    studentLogin:function (){
+                        let user={};
+                        user.method="studentLogin";
+                        user.personID=this.personID;
+                        user.password=this.password;
+                        let userString = JSON.stringify(user);
+                        console.log(userString);
+                        axios.post("http://localhost:8080/week5/BaseServlet",userString).then(
+                            (result)=>{
+                                alert(result.data);
+                                if(result.status===200 && result.data.code === 1){
+                                    window.location.href="studentHomepage.html";
+                                }else if(result.status===200 && result.data.code === 0){
+                                    alert("登录失败，请重试");
+                                }
+                            }
+                        )
+                    },
+                    teacherLogin:function (){
+                        let user={};
+                        user.method="teacherLogin";
+                        user.personID=this.personID;
+                        user.password=this.password;
+                        let userString = JSON.stringify(user);
+                        console.log(userString);
+                        axios.post("http://localhost:8080/week5/BaseServlet",userString).then(
+                            (result)=>{
+                                alert(result.data);
+                                if(result.status===200 && result.data.code === 1){
+                                    window.location.href="teacherHomepage.html";
+                                }else if(result.status===200 && result.data.code === 0){
+                                    alert("登录失败，请重试");
+                                }
+                            }
+                        )
+                    },
+                    toRegister:function(){
+                        window.location.href="http://localhost:8080/week5/register.html";
+                    }
+                }
+            }
+        )
+    </script>
+</body>
+</html>
