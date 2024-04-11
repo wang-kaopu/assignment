@@ -1,17 +1,8 @@
 package com.wkp.po;
 
-public class Teacher {
-    private String personID;
+public class Teacher extends User{
 
-    public String getPersonID() {
-        return personID;
-    }
-
-    public void setPersonID(String personID) {
-        this.personID = personID;
-    }
-
-    public Teacher(String personID) {
-        this.personID = personID;
+    public Teacher(Identity identity, String personID) {
+        super(identity, personID);
     }
 }

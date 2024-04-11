@@ -38,7 +38,8 @@ public class BaseServlet extends HttpServlet {
 
     public void studentLogin(HttpServletRequest req,HttpServletResponse resp){
         try {
-            req.getRequestDispatcher("StudentLoginServlet").forward(req,resp);
+            req.setAttribute("identity","student");
+            req.getRequestDispatcher("LoginServlet").forward(req,resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +47,8 @@ public class BaseServlet extends HttpServlet {
 
     public void teacherLogin(HttpServletRequest req,HttpServletResponse resp){
         try {
-            req.getRequestDispatcher("TeacherLoginServlet").forward(req,resp);
+            req.setAttribute("identity","teacher");
+            req.getRequestDispatcher("LoginServlet").forward(req,resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }

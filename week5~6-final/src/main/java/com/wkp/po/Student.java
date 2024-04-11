@@ -2,18 +2,8 @@ package com.wkp.po;
 
 import java.util.Objects;
 
-public class Student {
-    private String personID;
-
-    public Student(String personID) {
-        this.personID = personID;
-    }
-
-    public String getPersonID() {
-        return personID;
-    }
-
-    public void setPersonID(String personID) {
-        this.personID = personID;
+public class Student extends User{
+    public Student(Identity identity, String personID) {
+        super(identity, personID);
     }
 }
