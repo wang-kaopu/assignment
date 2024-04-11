@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="register">
+    <h5>注册</h5>
+    用户名：<input type="text" v-model="username">
+    密码：<input type="text" v-model="password">
+    <input type="button" value="提交" @click="register()">
+</div>
+</body>
+<script>
+    function sleep(time){
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+    async function runSleep(time){
+        await sleep(time);
+    }
+    new Vue({
+        el:"#register",
+        data:{
+            username:null,
+            password:null
+        },
+        methods:{
+            register:function(){
+                let user={};
+                user.method="register";
+                user.username=this.username;
+                user.password=this.password;
+                let userString = JSON.stringify(user);
+                console.log(userString);
+                axios.post("http://localhost:8080/week4/BaseServlet",userString).then(
+                    (result)=>{
+                    //     console.log(result);
+                    //     console.log(result.data);
+                    //     alert(result.data);
+                    if(result.status===200 && result.data.code===1){
+                        alert("注册成功");
+                        window.location.href="http://localhost:8080/week4/login.html";
+                    }else{
+                        alert("注册失败，请重试");
+                    }
+                    }
+                )
+            }
+        }
+    })
+</script>
+</html>
