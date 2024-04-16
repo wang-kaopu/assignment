@@ -7,6 +7,9 @@ import java.sql.SQLException;
 public class StudentServiceImpl implements StudentService {
     @Override
     public boolean checkIdentity(String sql, String... params) {
+//        for (String param : params) {
+//            System.out.println("参数有："+param);
+//        }
         try {
             return (JDBCUtils.Query(sql, params));
         } catch (SQLException e) {

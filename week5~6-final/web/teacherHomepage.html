@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student Homepage</title>
+    <title>Teacher Homepage</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
 </head>
 <body>
 <h4>
     教师主页
 </h4>
 <div id="teacherHomepage">
-    <input type="button" value="" @click="">
-    <input type="button" value="" @click="">
-    <input type="button" value="个人信息" @click="">
+    <input type="button" value="创建课程" @click="toAddCourse()">
+<!--    <input type="button" value="" @click="">-->
+<!--    <input type="button" value="个人信息" @click="">-->
 </div>
 </body>
 <script>
@@ -21,7 +23,9 @@
             personID:null
         },
         methods:{
-
+            toAddCourse:function(){
+                window.location.href="http://localhost:8080/week5/addCourse.html";
+            }
         }
     })
 </script>

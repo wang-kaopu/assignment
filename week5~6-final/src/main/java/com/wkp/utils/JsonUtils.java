@@ -57,4 +57,17 @@ public class JsonUtils {
         System.out.println(builder);
         return builder.toString();
     }
+
+    public static String getRequestString(HttpServletRequest req) throws IOException {
+        // 1. 打开输入流读取客户端写入的json字符串
+        InputStream in = req.getInputStream();
+        // 2. 使用BufferedReader包装流，指定字符串
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        String str = null;
+        StringBuilder builder = new StringBuilder();
+        // 3. 读取客户端传递的json字符串参数，拼接到StringBuilder中
+        while ((str = reader.readLine()) != null) builder.append(str);
+        //System.out.println(params);
+        return builder.toString();
+    }
 }

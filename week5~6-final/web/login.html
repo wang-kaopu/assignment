@@ -5,7 +5,6 @@
     <title>Title</title>
     <script src="js/axios.js"></script>
     <script src="js/vue.js"></script>
-<!--    <script src="js/login.js"></script>-->
 </head>
 <body>
     <div id="login">
@@ -32,7 +31,6 @@
                         console.log(userString);
                         axios.post("http://localhost:8080/week5/BaseServlet",userString).then(
                             (result)=>{
-                                alert(result.data);
                                 if(result.status===200 && result.data.code === 1){
                                     window.location.href="studentHomepage.html";
                                 }else if(result.status===200 && result.data.code === 0){
@@ -50,7 +48,6 @@
                         console.log(userString);
                         axios.post("http://localhost:8080/week5/BaseServlet",userString).then(
                             (result)=>{
-                                alert(result.data);
                                 if(result.status===200 && result.data.code === 1){
                                     window.location.href="teacherHomepage.html";
                                 }else if(result.status===200 && result.data.code === 0){

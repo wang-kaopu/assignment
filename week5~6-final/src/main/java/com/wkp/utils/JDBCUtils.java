@@ -21,10 +21,6 @@ public class JDBCUtils {
             PASSWORD = props.getProperty("password");
             URL = props.getProperty("url");
             DRIVER = props.getProperty("driver");
-            System.out.println(USER);
-            System.out.println(PASSWORD);
-            System.out.println(URL);
-            System.out.println(DRIVER);
             Class.forName(DRIVER);//注册驱动
         }catch (Exception e){
             throw new RuntimeException(e);
@@ -56,6 +52,7 @@ public class JDBCUtils {
             ps = conn.prepareStatement(sql);
             int i = 1;
             for (Object parm : parms) {
+                //System.out.println(parm);
                 ps.setObject(i,parm);
                 i++;
             }
@@ -89,7 +86,7 @@ public class JDBCUtils {
         PreparedStatement ps = conn.prepareStatement(sql);
         int i=1;
         for (String param : params) {
-            //System.out.println(param);
+            //System.out.println("param:"+param);
             ps.setObject(i,param);
             i++;
         }
@@ -97,17 +94,16 @@ public class JDBCUtils {
         boolean ret=false;
         while(rs.next()){
             ret=true;
-            //System.out.println(rs.getString("personID"));
         }
         return ret;
     }
 
-    public static ResultSet QueryAndGetResultSet(String sql,String... params) throws SQLException {
+    public static ResultSet QueryAndGetResultSet(String sql,Object... params) throws SQLException {
         Connection conn = getConn();
         PreparedStatement ps = conn.prepareStatement(sql);
         int i=1;
-        for (String param : params) {
-            //System.out.println(param);
+        for (Object param : params) {
+            //System.out.println("参数："+param);
             ps.setObject(i,param);
             i++;
         }

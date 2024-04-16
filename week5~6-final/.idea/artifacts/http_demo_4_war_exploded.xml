@@ -7,6 +7,16 @@
         <element id="directory" name="classes">
           <element id="module-output" name="http-demo-4" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="lib (2)" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/fastjson2-extension-2.0.48.jar" />
+          <element id="library" level="project" name="lib (3)" />
+          <element id="library" level="project" name="Maven: com.alibaba.fastjson2:fastjson2-extension:2.0.48" />
+          <element id="library" level="project" name="Maven: com.alibaba.fastjson2:fastjson2:2.0.48" />
+          <element id="library" level="project" name="Maven: com.mysql:mysql-connector-j:8.0.33" />
+          <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:4.0.1" />
+          <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.21.9" />
+        </element>
       </element>
     </root>
   </artifact>
