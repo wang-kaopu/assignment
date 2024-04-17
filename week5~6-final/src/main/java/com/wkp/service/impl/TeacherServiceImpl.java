@@ -1,5 +1,6 @@
 package com.wkp.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.wkp.po.*;
 import com.wkp.service.TeacherService;
 import com.wkp.utils.JDBCUtils;
@@ -52,5 +53,9 @@ public class TeacherServiceImpl implements TeacherService {
         executeMap.put("courseExecute",courseExecute);
         executeMap.put("lessonExecute",lessonExecute);
         return executeMap;
+    }
+
+    public String getTeacherInfo(Teacher teacher){
+        return JSON.toJSONString(teacher);
     }
 }

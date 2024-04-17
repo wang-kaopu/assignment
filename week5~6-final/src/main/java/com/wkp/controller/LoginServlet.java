@@ -3,6 +3,7 @@ package com.wkp.controller;
 import com.alibaba.fastjson2.JSON;
 import com.wkp.po.Identity;
 import com.wkp.po.Student;
+import com.wkp.po.Teacher;
 import com.wkp.po.User;
 import com.wkp.service.impl.StudentServiceImpl;
 import com.wkp.utils.JDBCUtils;
@@ -25,25 +26,25 @@ public class LoginServlet extends BaseServlet {
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String sql = null;
-        String identity = (String) request.getAttribute("identity");
-        if (identity.equals("student")) {
+        //1. 确认身份
+        Identity identity = (Identity) request.getAttribute("identity");
+        //2. 编写sql查询语句
+        if (identity.equals(Identity.student)) {
             sql = "SELECT * FROM STUDENTS WHERE PERSONID = ? AND PASSWORD = ?;";
-        } else if (identity.equals("teacher")) {
+        } else if (identity.equals(Identity.teacher)) {
             sql = "SELECT * FROM TEACHERS WHERE PERSONID = ? AND PASSWORD = ?;";
         }
-        System.out.println("sql:" + sql);
+        //3. 获得请求字符串并
         String requestString = (String) request.getAttribute("requestString");
         StudentServiceImpl studentServiceImpl = new StudentServiceImpl();
-        //System.out.println("requestString:"+requestString);
+        //4. 转换为Map
         Map<String, String> params = JSON.parseObject(requestString, Map.class);
+        //5. 获得ID和密码
         String personID = params.get("personID");
-        //System.out.println(personID);
         String password = params.get("password");
-        //System.out.println(password);
-
-
+        //6. 在数据库里查询
         boolean checked = studentServiceImpl.checkIdentity(sql, personID, password);
-
+        //7. 编写响应结果
         Writer writer = response.getWriter();
         Map<String, String> map = new HashMap<>();
         if (checked) {
@@ -54,35 +55,37 @@ public class LoginServlet extends BaseServlet {
             System.out.println(map);
             System.out.println("登录失败");
         }
+        //8. 创建实体类，并作为session域对象
         HttpSession session = request.getSession();
         String QueryNameSql=null;
-        String name = null;
-        ResultSet rs=null;
-        if (identity.equals("student")) {
+        ResultSet rs;
+        if (identity.equals(Identity.student)) {
             try {
                 QueryNameSql = "SELECT * FROM STUDENTS WHERE PERSONID = ?;";
                 rs = JDBCUtils.QueryAndGetResultSet(QueryNameSql, personID);
                 while(rs.next()){
-                    name = rs.getString("studentName");
+                    String studentName = rs.getString("studentName");
+                    session.setAttribute("currentStudent",new Student(Identity.student,personID,studentName));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        } else if (identity.equals("teacher")) {
+        } else if (identity.equals(Identity.teacher)) {
             QueryNameSql="SELECT * FROM TEACHERS WHERE PERSONID = ?;";
             try {
                 rs = JDBCUtils.QueryAndGetResultSet(QueryNameSql, personID);
                 while(rs.next()){
-                    name = rs.getString("teacherName");
+                    String teacherName = rs.getString("teacherName");
+                    String teacherQQ = rs.getString("teacherQQ");
+                    String email = rs.getString("email");
+                    String teacherDescription= rs.getString("teacherDescription");
+                    session.setAttribute("currentTeacher",new Teacher(Identity.teacher,personID,teacherName,email,teacherQQ,teacherDescription));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        //System.out.println(new User(Identity.valueOf(identity), personID, name));
-        session.setAttribute("currentUser", new User(Identity.valueOf(identity), personID, name));
-        //System.out.println(JsonUtils.mapToJSONString(map, "code"));
+        //8. 返回响应结果
         writer.write(JsonUtils.mapToJSONString(map, "code"));
     }
 }

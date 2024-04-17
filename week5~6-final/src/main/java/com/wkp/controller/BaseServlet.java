@@ -3,6 +3,7 @@ package com.wkp.controller;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.wkp.po.Course;
+import com.wkp.po.Identity;
 import com.wkp.po.User;
 import com.wkp.utils.JsonUtils;
 
@@ -24,13 +25,14 @@ public class BaseServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("utf-8");
         resp.setCharacterEncoding("utf-8");
-
+        //1. 获得请求字符串
         String requestString = JsonUtils.getRequestString(req);
+        //2. 设置请求域对象：请求字符串
         req.setAttribute("requestString", requestString);
         JSONObject requestJsonObject = JSON.parseObject(requestString);
         String methodName = (String) requestJsonObject.get("method");
         req.setAttribute("requestJsonObject", requestJsonObject);
-        //System.out.println(methodName);
+        //3. 反射找到对应Servlet
         Class<? extends BaseServlet> actionClass = this.getClass();
         Method method;
         try {
@@ -43,10 +45,14 @@ public class BaseServlet extends HttpServlet {
 
     public void studentLogin(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.setAttribute("identity", "student");
-            req.getRequestDispatcher("LoginServlet").forward(req, resp);
+            //1. 请求转发到loginServlet
+            //2. 设置session域对象和req域对象
             HttpSession session = req.getSession();
             this.currentUser = (User) session.getAttribute("currentUser");
+            req.getRequestDispatcher("LoginServlet").forward(req, resp);
+            req.setAttribute("identity", Identity.student);
+            session.setAttribute("identity",Identity.student);
+            session.setAttribute("currentUser",currentUser);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -54,10 +60,14 @@ public class BaseServlet extends HttpServlet {
 
     public void teacherLogin(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.setAttribute("identity", "teacher");
-            req.getRequestDispatcher("LoginServlet").forward(req, resp);
+            //1. 请求转发到loginServlet
+            //2. 设置session域对象和req域对象
             HttpSession session = req.getSession();
+            req.setAttribute("identity",Identity.teacher);
+            req.getRequestDispatcher("LoginServlet").forward(req, resp);
             this.currentUser = (User) session.getAttribute("currentUser");
+            session.setAttribute("identity",Identity.teacher);
+            session.setAttribute("currentUser",currentUser);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -77,6 +87,24 @@ public class BaseServlet extends HttpServlet {
             Course course = JSON.parseObject(requestString, Course.class);
             req.setAttribute("course", course);
             req.getRequestDispatcher("AddCourseServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getTeacherInfo(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            //System.out.println("刀客这里");
+            req.getRequestDispatcher("TeacherInfoServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void modifyTeacherInfo(HttpServletRequest req,HttpServletResponse resp){
+        try {
+//            System.out.println("到了这里");
+            req.getRequestDispatcher("modifyInfoServlet").forward(req,resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }

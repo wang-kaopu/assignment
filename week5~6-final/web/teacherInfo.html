@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>教师个人信息页</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="TeacherInfo">
+    <table border="1">
+        <tr>
+            <td>教师姓名</td>
+            <td>{{teacher.teacherName}}</td>
+            <td><input type="button" value="修改姓名" @click="visible.name=true"></td>
+            <td v-if="visible.name==true"><input type="text" v-model="teacher.teacherName"></td>
+            <td v-if="visible.name==true"><input type="button" value="确定" @click="visible.name=false"></td>
+        <tr>
+        <tr>
+            <td>ID</td>
+            <td>{{teacher.personID}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>邮箱</td>
+            <td>{{teacher.email}}</td>
+            <td><input type="button" value="修改邮箱" @click="visible.email=true"></td>
+            <td v-if="visible.email==true"><input type="text" v-model="teacher.email"></td>
+            <td v-if="visible.email==true"><input type="button" value="确定" @click="visible.email=false"></td>
+        </tr>
+        <tr>
+            <td>QQ号</td>
+            <td>{{teacher.teacherQQ}}</td>
+            <td><input type="button" value="修改QQ号" @click="visible.QQ=true"></td>
+            <td v-if="visible.QQ==true"><input type="text" v-model="teacher.teacherQQ"></td>
+            <td v-if="visible.QQ==true"><input type="button" value="确定" @click="visible.QQ=false"></td>
+        </tr>
+        <tr>
+            <td>个人介绍</td>
+            <td>{{teacher.teacherDescription}}</td>
+            <td><input type="button" value="修改简介" @click="visible.description=true"></td>
+            <td v-if="visible.description==true"><input type="text" v-model="teacher.teacherDescription"></td>
+            <td v-if="visible.description==true"><input type="button" value="确定" @click="visible.description=false"></td>
+        </tr>
+    </table>
+    <br>
+    <input type="button" value="确定修改" @click="commitTeacherInfo()">
+</div>
+<script>
+    new Vue({
+            el: "#TeacherInfo",
+            data: {
+                teacher: {
+                    teacherName: null,
+                    email: null,
+                    teacherQQ: null,
+                    teacherDescription: null,
+                    personID: null
+                },
+                visible: {
+                    name: false,
+                    email: false,
+                    QQ: false,
+                    description: false,
+                }
+            },
+            methods: {
+                commitTeacherInfo:function (){
+                    this.teacher.method = "modifyTeacherInfo";
+                    axios.post("http://localhost:8080/week5/BaseServlet",JSON.stringify(this.teacher)).then(
+                        (result)=>{
+                            if(result.status===200 && result.data.update>0){
+                                alert("修改成功");
+                                //this.$forceUpdate();
+                            }else{
+                                alert("修改失败，请重试");
+                            }
+                        }
+                    )
+                }
+            },
+            mounted() {
+                let requestString = {"method": "getTeacherInfo"};
+                axios.post("http://localhost:8080/week5/BaseServlet", requestString).then(
+                    (result) => {
+                        let teacherInfoString = result.data;
+                        let teacher = JSON.parse(JSON.stringify(teacherInfoString));
+                        console.log(teacher);
+                        this.teacher.teacherName = teacher.name;
+                        this.teacher.email = teacher.email;
+                        this.teacher.teacherQQ = teacher.teacherQQ;
+                        this.teacher.teacherDescription = teacher.teacherDescription;
+                        this.teacher.personID = teacher.personID;
+                    }
+                )
+            }
+        }
+    )
+</script>
+</body>
+</html>
