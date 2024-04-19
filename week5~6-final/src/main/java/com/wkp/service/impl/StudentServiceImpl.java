@@ -1,6 +1,8 @@
 package com.wkp.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.wkp.po.Course;
+import com.wkp.po.Student;
 import com.wkp.service.StudentService;
 import com.wkp.utils.JDBCUtils;
 
@@ -42,5 +44,25 @@ public class StudentServiceImpl implements StudentService {
             throw new RuntimeException(e);
         }
         return list;
+    }
+
+    public String getStudentInfo(String studentID) {
+        //1. 编写sql语句
+        String querySql = "SELECT * FROM STUDENTS WHERE PERSONID = ?;";
+        //2. 查询
+        Student student = null;
+        try {
+            ResultSet rs = JDBCUtils.QueryAndGetResultSet(querySql, studentID);
+            while (rs.next()) {
+                String studentName = rs.getString("studentName");
+                String email = rs.getString("email");
+                String studentDescription = rs.getString("studentDescription");
+                int studentGrade = rs.getInt("studentGrade");
+                student = new Student(studentName, studentID, email, studentDescription, studentGrade);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return JSON.toJSONString(student);
     }
 }

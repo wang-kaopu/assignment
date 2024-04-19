@@ -100,7 +100,14 @@ public class BaseServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
-
+    public void getStudentInfo(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            //System.out.println("刀客这里");
+            req.getRequestDispatcher("StudentInfoServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public void modifyTeacherInfo(HttpServletRequest req,HttpServletResponse resp){
         try {
 //            System.out.println("到了这里");

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生信息页</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="StudentInfo">
+    <table border="1">
+        <tr>
+            <td>学生姓名</td>
+            <td>{{student.studentName}}</td>
+            <td><input type="button" value="修改姓名" @click="visible.name=true"></td>
+            <td v-if="visible.name==true"><input type="text" v-model="student.studentName"></td>
+            <td v-if="visible.name==true"><input type="button" value="确定" @click="visible.name=false"></td>
+        <tr>
+        <tr>
+            <td>ID</td>
+            <td>{{student.personID}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>邮箱</td>
+            <td>{{student.email}}</td>
+            <td><input type="button" value="修改邮箱" @click="visible.email=true"></td>
+            <td v-if="visible.email==true"><input type="text" v-model="student.email"></td>
+            <td v-if="visible.email==true"><input type="button" value="确定" @click="visible.email=false"></td>
+        </tr>
+        <tr>
+            <td>年级</td>
+            <td>{{student.studentGrade}}</td>
+            <td><input type="button" value="修改年级" @click="visible.grade=true"></td>
+            <td v-if="visible.grade==true"><input type="text" v-model="student.studentGrade"></td>
+            <td v-if="visible.grade==true"><input type="button" value="确定" @click="visible.grade=false"></td>
+        </tr>
+        <tr>
+            <td>个人介绍</td>
+            <td>{{student.studentDescription}}</td>
+            <td><input type="button" value="修改简介" @click="visible.description=true"></td>
+            <td v-if="visible.description==true"><input type="text" v-model="student.studentDescription"></td>
+            <td v-if="visible.description==true"><input type="button" value="确定" @click="visible.description=false"></td>
+        </tr>
+    </table>
+    <br>
+    <input type="button" value="确定修改" @click="commitStudentInfo()">
+</div>
+<script>
+    new Vue({
+            el: "#StudentInfo",
+            data: {
+                student: {
+                    studentName: null,
+                    email: null,
+                    studentGrade: null,
+                    studentDescription: null,
+                    personID: null
+                },
+                visible: {
+                    name: false,
+                    email: false,
+                    grade: false,
+                    description: false,
+                }
+            },
+            methods: {
+                commitStudentInfo:function (){
+                    this.student.method = "modifyStudentInfo";
+                    axios.post("http://localhost:8080/week5/BaseServlet",JSON.stringify(this.student)).then(
+                        (result)=>{
+                            if(result.status===200 && result.data.update>0){
+                                alert("修改成功");
+                            }else{
+                                alert("修改失败，请重试");
+                            }
+                        }
+                    )
+                }
+            },
+            mounted() {
+                let requestString = {"method": "getStudentInfo"};
+                axios.post("http://localhost:8080/week5/BaseServlet", requestString).then(
+                    (result) => {
+                        let studentInfoString = result.data;
+                        let student = JSON.parse(JSON.stringify(studentInfoString));
+                        console.log(student);
+                        this.student.studentName = student.name;
+                        this.student.email = student.email;
+                        this.student.studentGrade = student.studentGrade;
+                        this.student.studentDescription = student.studentDescription;
+                        this.student.personID = student.personID;
+                    }
+                )
+            }
+        }
+    )
+</script>
+</body>
+</html>
