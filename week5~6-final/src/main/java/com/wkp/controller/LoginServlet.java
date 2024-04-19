@@ -18,7 +18,6 @@ import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 @WebServlet("/LoginServlet")
@@ -57,7 +56,7 @@ public class LoginServlet extends BaseServlet {
         }
         //8. 创建实体类，并作为session域对象
         HttpSession session = request.getSession();
-        String QueryNameSql=null;
+        String QueryNameSql;
         ResultSet rs;
         if (identity.equals(Identity.student)) {
             try {
@@ -66,6 +65,7 @@ public class LoginServlet extends BaseServlet {
                 while(rs.next()){
                     String studentName = rs.getString("studentName");
                     session.setAttribute("currentStudent",new Student(Identity.student,personID,studentName));
+                    session.setAttribute("currentUser",new User(Identity.student,personID,studentName));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -80,6 +80,7 @@ public class LoginServlet extends BaseServlet {
                     String email = rs.getString("email");
                     String teacherDescription= rs.getString("teacherDescription");
                     session.setAttribute("currentTeacher",new Teacher(Identity.teacher,personID,teacherName,email,teacherQQ,teacherDescription));
+                    session.setAttribute("currentUser",new User(Identity.teacher,personID,teacherName));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);

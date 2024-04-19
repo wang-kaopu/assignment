@@ -1,5 +1,6 @@
-package com.wkp.controller;
+package com.wkp.controller.student;
 
+import com.wkp.controller.BaseServlet;
 import com.wkp.utils.JDBCUtils;
 import com.wkp.utils.JsonUtils;
 
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @WebServlet("/RegisterServlet")
-public class RegisterServlet extends BaseServlet{
+public class RegisterServlet extends BaseServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Writer writer = resp.getWriter();

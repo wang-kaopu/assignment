@@ -2,32 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>浏览课程</title>
     <script src="js/axios.js"></script>
     <script src="js/vue.js"></script>
 </head>
 <body>
 <div id="browseCourses">
-
+    <h4>正在学习的课程：</h4>
+    <table border="1">
+        <thead>
+        <tr>
+            <td>课程名称</td>
+            <td>课程ID</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(course, index) in learningCourses">
+            <td>{{course.courseName}}</td>
+            <td>{{course.courseID}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <h4>其他课程：</h4>
+    <table border="1">
+        <thead>
+        <tr>
+            <td>课程名称</td>
+            <td>课程ID</td>
+            <td><input type="button" value="进入学习" @click="learnCourse()"></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(course, index) in otherCourses">
+            <td>{{course.courseName}}</td>
+            <td>{{course.courseID}}</td>
+            <td><input type="button" value="加入课程" @click="joinCourse()"></td>
+        </tr>
+        </tbody>
+    </table>
+<!--    还没写-->
 </div>
 <script>
     new Vue({
-        el:"#browseCourses",
-        data:{
-            studentID:null
-        },
-        methods:{
-
+            el: "#browseCourses",
+            data: {
+                studentID: null,
+                learningCourses: null,
+                otherCourses: null
+            },
+            methods: {
+                learnCourse: function () {
+                //     请求该课程的页面
+                },
+                joinCourse: function () {
+                //    axios.post("http://localhost:8080")
+                }
+            },
+            mounted() {
+                let jsonObject = {};
+                jsonObject.method = "getCourses";
+                axios.post("http://localhost:8080/week5/BaseServlet", JSON.stringify(jsonObject)).then(
+                    (result) => {
+                        console.log(result.data);
+                        //1. 解析响应结果
+                        let learningString = result.data[0];
+                        let otherString = result.data[1];
+                        this.learningCourses = JSON.parse(learningString);
+                        this.otherCourses = JSON.parse(otherString);
+                    }
+                )
+            }
         }
-    }).mounted(
-        ()=>{
-            let methodName = "browseCourse";
-            let JSONString = JSON.stringify(methodName);
-            axios.post("http://localhost:8080/week5/BaseServlet", JSONString).then(
-                (result)=>{
-                    this.studentID=result.data.studentID;
-            })
-    })
+    )
 </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
-package com.wkp.controller;
+package com.wkp.controller.student;
 
+import com.wkp.controller.BaseServlet;
 import com.wkp.po.Student;
 
 import javax.servlet.ServletException;
@@ -10,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/BrowseCourses")
-public class BrowseCoursesServlet extends BaseServlet{
+public class BrowseCoursesServlet extends BaseServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();

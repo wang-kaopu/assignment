@@ -66,14 +66,14 @@
                 data.courseStartTime = this.courseStartTime;
                 data.courseEndTime = this.courseEndTime;
                 data.studentNumberLimitation = this.studentNumberLimitation;
-                // data.courseContextString = courseContextString;
-                data.lessons=this.lessons;
+
+                data.lessons = this.lessons;
                 data.method = "addCourse";
                 let dataString = JSON.stringify(data);
                 axios.post("http://localhost:8080/week5/BaseServlet", dataString).then(
                     (result) => {
                         if (result.status === 200 && result.data.courseExecute > 0 && result.data.lessonExecute > 0) {
-                            alert("添加成功，添加了"+result.data.courseExecute+"个课程，"+result.data.lessonExecute+"个小节。");
+                            alert("添加成功，添加了" + result.data.courseExecute + "个课程，" + result.data.lessonExecute + "个小节。");
                             window.location.href = "http://localhost:8080/week5/teacherHomepage.html";
                         } else {
                             alert("添加失败，请重试")
@@ -82,11 +82,11 @@
                 )
             },
             addNewLessonToLessons: function () {
-                let lesson={};
+                let lesson = {};
                 lesson.courseID = this.courseID;
-                lesson.chapterName=this.chapterName;
-                lesson.lessonName=this.lessonName;
-                lesson.lessonContext=this.lessonContext;
+                lesson.chapterName = this.chapterName;
+                lesson.lessonName = this.lessonName;
+                lesson.lessonContext = this.lessonContext;
                 this.lessons.push(lesson);
                 this.$forceUpdate();
             }

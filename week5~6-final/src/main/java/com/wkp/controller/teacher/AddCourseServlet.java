@@ -1,6 +1,7 @@
-package com.wkp.controller;
+package com.wkp.controller.teacher;
 
 import com.alibaba.fastjson2.JSON;
+import com.wkp.controller.BaseServlet;
 import com.wkp.po.Course;
 import com.wkp.po.User;
 import com.wkp.service.TeacherService;

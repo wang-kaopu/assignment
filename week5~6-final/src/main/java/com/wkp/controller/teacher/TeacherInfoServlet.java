@@ -1,5 +1,6 @@
-package com.wkp.controller;
+package com.wkp.controller.teacher;
 
+import com.wkp.controller.BaseServlet;
 import com.wkp.po.Teacher;
 import com.wkp.service.impl.TeacherServiceImpl;
 

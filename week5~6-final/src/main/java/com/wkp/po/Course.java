@@ -2,6 +2,7 @@ package com.wkp.po;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Course {
@@ -12,10 +13,10 @@ public class Course {
     private LocalDateTime courseStartTime;
     private LocalDateTime courseEndTime;
     private int studentNumberLimitation;
-    private ArrayList<Lesson> lessons;
-    //private Lesson[] lessons;
+    private List<Lesson> lessons;
     private String teacherID;
     private String teacherName;
+    private String studentList;
 
     @Override
     public String toString() {
@@ -32,31 +33,41 @@ public class Course {
                 ", teacherName='" + teacherName + '\'' +
                 '}';
     }
-
-    public Course(String teacherID, String teacherName, String method, String courseName, String courseDescription, LocalDateTime courseStartTime, LocalDateTime courseEndTime, int studentNumberLimitation, ArrayList<Lesson> lessons) {
-        this.method = method;
-        this.teacherID=teacherID;
-        this.teacherName=teacherName;
+    public Course(int courseID, String courseName, String courseDescription, LocalDateTime courseStartTime, LocalDateTime courseEndTime, int studentNumberLimitation, List<Lesson> lessons, String teacherID, String teacherName) {
+        this.courseID = courseID;
         this.courseName = courseName;
         this.courseDescription = courseDescription;
-        this.courseStartTime=courseStartTime;
+        this.courseStartTime = courseStartTime;
         this.courseEndTime = courseEndTime;
         this.studentNumberLimitation = studentNumberLimitation;
         this.lessons = lessons;
-        this.courseID = new Random().nextInt(9000) + 1000;
+        this.teacherID = teacherID;
+        this.teacherName = teacherName;
     }
-//    public Course(String teacherID,String teacherName,String method, String courseName, String courseDescription,LocalDateTime courseStartTime,LocalDateTime courseEndTime, int studentNumberLimitation, ArrayList<Lesson> lessons) {
-//        this.method = method;
-//        this.teacherID=teacherID;
-//        this.teacherName=teacherName;
-//        this.courseName = courseName;
-//        this.courseDescription = courseDescription;
-//        this.courseStartTime=courseStartTime;
-//        this.courseEndTime = courseEndTime;
-//        this.studentNumberLimitation = studentNumberLimitation;
-//        //this.lessons = lessons;
-//        this.courseID = new Random().nextInt(9000) + 1000;
-//    }
+
+    public Course(int courseID, String courseName, String courseDescription, LocalDateTime courseStartTime, LocalDateTime courseEndTime, int studentNumberLimitation, String teacherID, String teacherName) {
+        this.courseID = courseID;
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
+        this.courseStartTime = courseStartTime;
+        this.courseEndTime = courseEndTime;
+        this.studentNumberLimitation = studentNumberLimitation;
+        this.teacherID = teacherID;
+        this.teacherName = teacherName;
+    }
+
+    public Course(int courseID, String courseName, String courseDescription, LocalDateTime courseStartTime, LocalDateTime courseEndTime, int studentNumberLimitation, String teacherID, String teacherName, String studentList) {
+        this.courseID = courseID;
+        this.courseName = courseName;
+        this.courseDescription = courseDescription;
+        this.courseStartTime = courseStartTime;
+        this.courseEndTime = courseEndTime;
+        this.studentNumberLimitation = studentNumberLimitation;
+        this.teacherID = teacherID;
+        this.teacherName = teacherName;
+        this.studentList = studentList;
+    }
+
     public int getCourseID() {
         return courseID;
     }
@@ -129,7 +140,7 @@ public class Course {
         this.studentNumberLimitation = studentNumberLimitation;
     }
 
-    public ArrayList<Lesson> getLessons() {
+    public List<Lesson> getLessons() {
         return lessons;
     }
 
@@ -137,7 +148,17 @@ public class Course {
         this.lessons = lessons;
     }
 
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
 
+    public String getStudentList() {
+        return studentList;
+    }
+
+    public void setStudentList(String studentList) {
+        this.studentList = studentList;
+    }
 //    public Lesson[] getLessons() {
 //        return lessons;
 //    }

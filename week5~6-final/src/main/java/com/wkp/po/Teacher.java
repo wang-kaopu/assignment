@@ -5,9 +5,6 @@ public class Teacher extends User {
     private String teacherName;
     private String teacherQQ;
     private String teacherDescription;
-//    public Teacher(Identity identity, String personID, String name) {
-//        super(identity, personID, name);
-//    }
 
     public String getTeacherName() {
         return teacherName;

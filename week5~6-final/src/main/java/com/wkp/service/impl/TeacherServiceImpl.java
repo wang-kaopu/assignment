@@ -6,10 +6,7 @@ import com.wkp.service.TeacherService;
 import com.wkp.utils.JDBCUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class TeacherServiceImpl implements TeacherService {
     private User currentUser;
@@ -31,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
         String teacherID = currentUser.getPersonID();
         String teacherName = currentUser.getName();
         //String lessonsJsonString = JSON.toJSONString(course.getLessons());
-        ArrayList<Lesson> lessons = course.getLessons();
+        List<Lesson> lessons = course.getLessons();
 
         String lessonInsertSql =
                 "INSERT IGNORE INTO LESSONS (COURSEID, LESSONID, LESSONNAME, LESSONCONTEXT, CHAPTERNAME, COURSENAME) VALUE (?,?,?,?,?,?);";

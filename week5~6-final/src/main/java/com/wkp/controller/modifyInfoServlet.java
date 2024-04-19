@@ -10,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -27,16 +26,16 @@ public class modifyInfoServlet extends BaseServlet {
             Teacher teacher = JSON.parseObject(requestString, Teacher.class);
 //            Teacher teacher = (Teacher)req.getSession().getAttribute("currentTeacher");
             //4.拿到各个参数
-            System.out.println(teacher);
+            //System.out.println(teacher);
             String name = teacher.getTeacherName();
             String email = teacher.getEmail();
             String teacherQQ = teacher.getTeacherQQ();
             String teacherDescription = teacher.getTeacherDescription();
-            //4。编写sql更新语句
+            //5。编写sql更新语句
             String updateSql = "UPDATE TEACHERS SET TEACHERNAME = ?, EMAIL = ?, TEACHERQQ = ?, TEACHERDESCRIPTION = ? WHERE PERSONID = ?;";
-            //5. 更新
+            //6. 更新
             int update = JDBCUtils.update(updateSql, name, email, teacherQQ, teacherDescription,teacher.getPersonID());
-            //6. 检查更新结果，并返回响应
+            //7. 检查更新结果，并返回响应
             HashMap<String, Integer> map = new HashMap<>();
             map.put("update",update);
             String jsonString = JSON.toJSONString(map);
@@ -44,7 +43,19 @@ public class modifyInfoServlet extends BaseServlet {
         } else if (identity.equals(Identity.student)) {
             Student student = JSON.parseObject(requestString, Student.class);
             //4. 拿到各个参数
-            //等下再写
+            //还没测试
+            String studentName = student.getStudentName();
+            String email = student.getEmail();
+            String studentDescription = student.getStudentDescription();
+            int studentGrade = student.getStudentGrade();
+            //5. 编写sql更新语句
+            String updateSql = "UPDATE STUDENTS SET STUDENTNAME = ?, EMAIL = ?, STUDENTGRADE = ?, STUDENTDESCRIPTION = ? WHERE PERSONID = ?;";
+            //6. 更新
+            int update = JDBCUtils.update(updateSql, studentName, email, studentGrade, studentDescription, student.getPersonID());
+            //7. 返回更新结果
+            HashMap<String,Integer> map = new HashMap<>();
+            map.put("update",update);
+            resp.getWriter().write(JSON.toJSONString(map));
         }
         }
 }
