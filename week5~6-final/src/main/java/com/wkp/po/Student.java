@@ -1,6 +1,5 @@
 package com.wkp.po;
 
-import java.util.Objects;
 
 public class Student extends User{
     private String studentName;

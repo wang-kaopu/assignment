@@ -1,10 +1,6 @@
 package com.wkp.service.impl;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import com.wkp.po.Course;
-import com.wkp.po.Lesson;
 import com.wkp.service.StudentService;
 import com.wkp.utils.JDBCUtils;
 
@@ -13,7 +9,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 public class StudentServiceImpl implements StudentService {
     @Override
