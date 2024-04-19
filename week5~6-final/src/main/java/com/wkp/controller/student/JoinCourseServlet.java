@@ -32,7 +32,7 @@ public class JoinCourseServlet extends BaseServlet {
         boolean update = false;
         if (student != null && list.size() < course.getStudentNumberLimitation()
                 && LocalDateTime.now().isAfter(course.getCourseStartTime()) && LocalDateTime.now().isBefore(course.getCourseEndTime())
-                && !(list.contains(student.getPersonID()))) {
+                ) {
             //判断人数限制、时间
             list.add(student.getPersonID());
             String updateSql = "UPDATE COURSES SET STUDENTSLIST = ? WHERE COURSEID = ?;";
