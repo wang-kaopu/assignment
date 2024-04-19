@@ -39,28 +39,28 @@ public class getCoursesServlet extends BaseServlet {
         for (Course c : courses) {
             //在课程的学生列表里找是否有学生ID，判断该学生是否参加了该课程
             String listString = c.getStudentList();
-            List<String> list = JSON.parseArray(listString,String.class);
+            List<String> list = JSON.parseArray(listString, String.class);
             boolean isInvolved = false;
-            if(list!=null){
+            if (list != null) {
                 for (String s : list) {
-                    if(s.equals(personID)){
+                    if (s != null && s.equals(personID)) {
                         isInvolved = true;
+                        break;
                     }
-
                 }
-                if(isInvolved){
+                if (isInvolved) {
                     learning.add(c);
-                }else {
+                } else {
                     other.add(c);
                 }
-            }else {
+            } else {
                 other.add(c);
             }
         }
         System.out.println("getCoursesServlet" + courses);
         //4.设置域对象
-        req.getSession().setAttribute("learningCourses",learning);
-        req.getSession().setAttribute("otherCourses",other);
+        req.getSession().setAttribute("learningCourses", learning);
+        req.getSession().setAttribute("otherCourses", other);
         //5. 响应
         String learningCoursesString = JSON.toJSONString(learning);
         String otherCoursesString = JSON.toJSONString(other);

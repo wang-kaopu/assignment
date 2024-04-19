@@ -20,6 +20,7 @@
         <tr v-for="(course, index) in learningCourses">
             <td>{{course.courseName}}</td>
             <td>{{course.courseID}}</td>
+            <td><input type="button" value="进入学习" @click="toLearnCourse()"></td>
         </tr>
         </tbody>
     </table>
@@ -29,18 +30,17 @@
         <tr>
             <td>课程名称</td>
             <td>课程ID</td>
-            <td><input type="button" value="进入学习" @click="learnCourse()"></td>
         </tr>
         </thead>
         <tbody>
         <tr v-for="(course, index) in otherCourses">
             <td>{{course.courseName}}</td>
             <td>{{course.courseID}}</td>
-            <td><input type="button" value="加入课程" @click="joinCourse()"></td>
+            <td><input type="button" value="加入课程" @click="joinCourse(course)"></td>
         </tr>
         </tbody>
     </table>
-<!--    还没写-->
+    <!--    还没写-->
 </div>
 <script>
     new Vue({
@@ -51,11 +51,21 @@
                 otherCourses: null
             },
             methods: {
-                learnCourse: function () {
-                //     请求该课程的页面
+                toLearnCourse: function () {
+                    //     请求该课程的页面
+                    axios.post("http://localhost:8080/week5/BaseServlet")
                 },
-                joinCourse: function () {
-                //    axios.post("http://localhost:8080")
+                joinCourse: function (course) {
+                    course.method = "joinCourse";
+                    axios.post("http://localhost:8080/week5/BaseServlet", JSON.stringify(course)).then(
+                        (result) => {
+                            if (result.status === 200 && result.data.code === "1") {
+                                alert("加入课程成功");
+                            } else {
+                                alert("加入课程失败，该课程已满员");
+                            }
+                        }
+                    )
                 }
             },
             mounted() {

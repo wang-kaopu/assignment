@@ -125,4 +125,11 @@ public class BaseServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+    public void joinCourse(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("JoinCourseServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

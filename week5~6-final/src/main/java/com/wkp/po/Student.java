@@ -18,7 +18,11 @@ public class Student extends User{
 
     @Override
     public String getPersonID() {
-        return personID;
+        if(super.getPersonID()!=null){
+            return super.getPersonID();
+        }else{
+            return personID;
+        }
     }
 
     @Override

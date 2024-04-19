@@ -41,9 +41,6 @@ public class StudentServiceImpl implements StudentService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-//        for (Course c : list) {
-//            System.out.println(c);
-//        }
         return list;
     }
 }
