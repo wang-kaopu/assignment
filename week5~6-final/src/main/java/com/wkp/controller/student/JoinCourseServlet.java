@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,8 @@ public class JoinCourseServlet extends BaseServlet {
             list = new ArrayList<>();
         }
         boolean update = false;
-        if (student != null && list.size() < course.getStudentNumberLimitation()) {
+        if (student != null && list.size() < course.getStudentNumberLimitation() && LocalDateTime.now().isAfter(course.getCourseStartTime()) && LocalDateTime.now().isBefore(course.getCourseEndTime())) {
+            //判断人数限制、时间
             list.add(student.getPersonID());
             String updateSql = "UPDATE COURSES SET STUDENTSLIST = ? WHERE COURSEID = ?;";
             String updatedList = JSON.toJSONString(list);
