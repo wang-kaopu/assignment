@@ -22,11 +22,6 @@ public class getCoursesServlet extends BaseServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //1. 获得当前学生ID
         Student student = (Student) req.getSession().getAttribute("currentStudent");
-//        if (student == null) {
-//            int code = 0;
-//            HashMap<String, Integer> map = new HashMap<>();
-//            resp.getWriter().write(JSON.toJSONString(map));
-//        }
         String personID = student.getPersonID();
         //2. 编写sql查询语句
         String querySql =
@@ -57,7 +52,6 @@ public class getCoursesServlet extends BaseServlet {
                 other.add(c);
             }
         }
-        System.out.println("getCoursesServlet" + courses);
         //4.设置域对象
         req.getSession().setAttribute("learningCourses", learning);
         req.getSession().setAttribute("otherCourses", other);
