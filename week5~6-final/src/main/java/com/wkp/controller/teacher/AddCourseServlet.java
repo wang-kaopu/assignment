@@ -21,7 +21,6 @@ public class AddCourseServlet extends BaseServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String requestString = (String) req.getAttribute("requestString");
         Course course = JSON.parseObject(requestString, Course.class);
-        //System.out.println("AddCourse:"+course);
         User currentUser = (User) req.getSession().getAttribute("currentUser");
         TeacherService teacherService = new TeacherServiceImpl();
         Map<String, Integer> addCourseResult = teacherService.addCourse(course, currentUser);
