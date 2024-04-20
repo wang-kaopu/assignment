@@ -160,4 +160,35 @@ public class BaseServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+    public void getLessonProblems(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("GetLessonProblemsServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void manageCourses(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("ManageCoursesServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getDiscussion(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("GetDiscussionServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendDiscussion(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("SendDiscussionServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

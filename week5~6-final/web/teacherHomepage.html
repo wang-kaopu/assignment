@@ -13,7 +13,7 @@
 <div id="teacherHomepage">
     <input type="button" value="创建课程" @click="toAddCourse()">
     <input type="button" value="个人信息" @click="toTeacherInfo()">
-<!--    <input type="button" value="个人信息" @click="">-->
+    <input type="button" value="管理课程" @click="toManageCourses()">
 </div>
 </body>
 <script>
@@ -28,6 +28,9 @@
             },
             toTeacherInfo(){
                 window.location.href="http://localhost:8080/week5/teacherInfo.html";
+            },
+            toManageCourses(){
+                window.location.href="http://localhost:8080/week5/manageCourses.html";
             }
         }
     })

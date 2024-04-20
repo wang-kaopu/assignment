@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>教师管理课程</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="manageCourses">
+    <h5>你的课程：</h5>
+    <table border="1">
+        <tr>
+            <td>课程ID</td>
+            <td>课程名称</td>
+            <td>开课时间</td>
+            <td>结课时间</td>
+            <td>人数限制</td>
+        </tr>
+        <tr v-for="(course, index) in courses">
+            <td>{{course.courseID}}</td>
+            <td>{{course.courseName}}</td>
+            <td>{{course.courseStartTime}}</td>
+            <td>{{course.courseEndTime}}</td>
+            <td>{{course.studentNumberLimitation}}</td>
+            <td><input type="button" value="进入讨论" @click="Discussion(course)"></td>
+        </tr>
+    </table>
+    <div v-if="visible.discussion==true">
+        <h5>讨论区：</h5>
+        <table border="1">
+            <tr>
+                <td>发送人ID</td>
+                <td>发送人姓名</td>
+                <td>发送时间</td>
+                <td>内容</td>
+            </tr>
+            <tr v-for="(discussion,index) in discussions">
+                <td>{{discussion.personID}}</td>
+                <td>{{discussion.personName}}</td>
+                <td>{{discussion.time}}</td>
+                <td>{{discussion.message}}</td>
+            </tr>
+        </table>
+        <form>
+            <input type="text" v-model="toSend"><input type="button" value="发送" @click="sendDiscussion">
+        </form>
+    </div>
+</div>
+<script>
+    new Vue({
+            el: "#manageCourses",
+            data: {
+                courses: [],
+                discussions: [],
+                visible: {
+                    discussion: false
+                },
+                currentCourse: null,
+                toSend: null
+            },
+            methods: {
+                Discussion(course) {
+                    //1. 请求课程对应的讨论区
+                    let toPost = {};
+                    toPost.method = "getDiscussion";
+                    toPost.courseID = course.courseID;
+                    this.currentCourse = course;
+                    axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                        (result) => {
+                            this.discussions = result.data;
+                        }
+                    );
+                    //2. 展示讨论区
+                    this.visible.discussion = true;
+                },
+                sendDiscussion() {
+                    let toPost = {};
+                    toPost.method = "sendDiscussion";
+                    toPost.message = this.toSend;
+                    toPost.courseID = this.currentCourse.courseID;
+                    //发送一条讨论
+                    axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                        (result) => {
+                            console.log(result.data);
+                            if (result.status === 200 && result.data.update > 0) {
+                                this.$forceUpdate();
+                                alert("发送成功");
+                                this.toSend = null;
+                            } else {
+                                alert("发送失败，请重试");
+                            }
+                        }
+                    )
+                }
+            },
+            mounted() {
+                let toPost = {};
+                toPost.method = "manageCourses";
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    (result) => {
+                        this.courses = result.data;
+                    }
+                );
+            }
+        }
+    )
+</script>
+</body>
+</html>

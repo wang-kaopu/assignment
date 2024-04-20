@@ -5,7 +5,10 @@ import com.wkp.po.*;
 import com.wkp.service.TeacherService;
 import com.wkp.utils.JDBCUtils;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TeacherServiceImpl implements TeacherService {
@@ -16,7 +19,7 @@ public class TeacherServiceImpl implements TeacherService {
         this.currentUser = currentUser;
         Random random = new Random();
         course.setCourseID(random.nextInt(9000) + 1000);
-        System.out.println("Impl:"+course.getCourseID());
+        System.out.println("Impl:" + course.getCourseID());
         course.setTeacherID(currentUser.getPersonID());
         course.setTeacherName(currentUser.getName());
         int courseID = course.getCourseID();
@@ -48,12 +51,36 @@ public class TeacherServiceImpl implements TeacherService {
         int courseExecute = JDBCUtils.update(courseInsertSql, JSON.toJSONString(lessons), courseID, courseName, courseDescription, courseStartTime, courseEndTime, studentNumberLimitation, teacherID, teacherName);
 
         Map<String, Integer> executeMap = new HashMap<>();
-        executeMap.put("courseExecute",courseExecute);
-        executeMap.put("lessonExecute",lessonExecute);
+        executeMap.put("courseExecute", courseExecute);
+        executeMap.put("lessonExecute", lessonExecute);
         return executeMap;
     }
 
-    public String getTeacherInfo(Teacher teacher){
+    public String getTeacherInfo(Teacher teacher) {
         return JSON.toJSONString(teacher);
+    }
+
+    public ArrayList queryCourses(String sql, String personID) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        ArrayList<Course> list = new ArrayList<>();
+        try (ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql, personID)) {
+            while (rs.next()) {
+                //拿到参数
+                String courseName = rs.getString("courseName");
+                int courseID = rs.getInt("courseID");
+                String courseDescription = rs.getString("courseDescription");
+                LocalDateTime courseStartTime = LocalDateTime.parse(rs.getString("courseStartTime"), formatter);
+                LocalDateTime courseEndTime = LocalDateTime.parse(rs.getString("courseEndTime"), formatter);
+                String teacherName = rs.getString("teacherName");
+                int teacherID = rs.getInt("teacherID");
+                int studentNumberLimitation = rs.getInt("studentNumberLimitation");
+                String studentsList = rs.getString("studentsList");
+                //创建对象，加入list
+                list.add(new Course(courseID, courseName, courseDescription, courseStartTime, courseEndTime, studentNumberLimitation, String.valueOf(teacherID), teacherName, studentsList));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 }
