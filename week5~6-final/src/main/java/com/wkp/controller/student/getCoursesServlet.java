@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.wkp.controller.BaseServlet;
 import com.wkp.po.Course;
 import com.wkp.po.Student;
+import com.wkp.po.User;
 import com.wkp.service.impl.StudentServiceImpl;
 
 import javax.servlet.ServletException;
@@ -21,7 +22,7 @@ public class getCoursesServlet extends BaseServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //1. 获得当前学生ID
-        Student student = (Student) req.getSession().getAttribute("currentStudent");
+        User student = (User) req.getSession().getAttribute("currentStudent");
         String personID = student.getPersonID();
         //2. 编写sql查询语句
         String querySql =

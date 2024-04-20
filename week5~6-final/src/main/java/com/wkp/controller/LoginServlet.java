@@ -26,7 +26,7 @@ public class LoginServlet extends BaseServlet {
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String sql = null;
         //1. 确认身份
-        Identity identity = (Identity) request.getAttribute("identity");
+        Identity identity = (Identity) request.getSession().getAttribute("identity");
         //2. 编写sql查询语句
         if (identity.equals(Identity.student)) {
             sql = "SELECT * FROM STUDENTS WHERE PERSONID = ? AND PASSWORD = ?;";

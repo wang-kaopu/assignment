@@ -20,7 +20,7 @@
         <tr v-for="(course, index) in learningCourses">
             <td>{{course.courseName}}</td>
             <td>{{course.courseID}}</td>
-            <td><input type="button" value="进入学习" @click="toLearnCourse()"></td>
+            <td><input type="button" value="进入学习" @click="toLearnCourse(course)"></td>
         </tr>
         </tbody>
     </table>
@@ -51,9 +51,11 @@
                 otherCourses: null
             },
             methods: {
-                toLearnCourse: function () {
-                    //     请求该课程的页面
-                    axios.post("http://localhost:8080/week5/BaseServlet")
+                toLearnCourse: function (course) {
+                    //     请求该课程的数据
+                    course.method = "toLearnCourse";
+                    //     跳转到该课程的页面
+                    window.location.href = "http://localhost:8080/week5/coursePage.html?courseID="+course.courseID;
                 },
                 joinCourse: function (course) {
                     course.method = "joinCourse";

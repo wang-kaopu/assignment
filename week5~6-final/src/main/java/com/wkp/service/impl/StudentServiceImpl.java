@@ -22,7 +22,7 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-    public ArrayList<Course> queryCourses(String querySql){
+    public ArrayList<Course> queryCourses(String querySql) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         ArrayList<Course> list = new ArrayList<>();
         try (ResultSet rs = JDBCUtils.QueryAndGetResultSet(querySql)) {
@@ -38,7 +38,7 @@ public class StudentServiceImpl implements StudentService {
                 int studentNumberLimitation = rs.getInt("studentNumberLimitation");
                 String studentsList = rs.getString("studentsList");
                 //创建对象，加入list
-                list.add(new Course(courseID,courseName,courseDescription,courseStartTime,courseEndTime,studentNumberLimitation,String.valueOf(teacherID),teacherName, studentsList));
+                list.add(new Course(courseID, courseName, courseDescription, courseStartTime, courseEndTime, studentNumberLimitation, String.valueOf(teacherID), teacherName, studentsList));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -64,5 +64,20 @@ public class StudentServiceImpl implements StudentService {
             throw new RuntimeException(e);
         }
         return JSON.toJSONString(student);
+    }
+
+    public String queryLessons(String sql) {
+        //1. 查询
+        String result = null;
+        try {
+            ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql);
+            while (rs.next()) {
+                result = rs.getString("lessons");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        //2. 返回
+        return result;
     }
 }

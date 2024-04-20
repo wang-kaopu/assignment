@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>课程页面</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="coursePage">
+    <h3>{{course.courseName}}</h3>
+    <h5>ID:{{course.courseID}} 开始时间：{{course.courseStartTime}} 结束时间：{{course.courseEndTime}}</h5>
+    <h5>课程介绍：{{course.courseDescription}}</h5>
+    课程章节：
+    <table border="1">
+        <tr>
+            <td>小节序号</td>
+            <td>章名</td>
+            <td>小节名</td>
+        </tr>
+        <tr v-for="(lesson, index) in course.lessons">
+            <td>{{index}}</td>
+            <td>{{lesson.chapterName}}</td>
+            <td>{{lesson.lessonName}}</td>
+            <td><input type="button" value="开始学习" @click="learnLesson(lesson)"></td>
+        </tr>
+    </table>
+    <div v-if="lessonContextVisible==true">
+        小节内容：<br>
+        {{lesson}}
+    </div>
+</div>
+<script>
+    new Vue({
+        el: "#coursePage",
+        data: {
+            course: {
+                courseID: null,
+                courseDescription: null,
+                courseName: null,
+                courseStartTime: null,
+                courseEndTime: null,
+                lessons: []
+            },
+            lessonContextVisible:false,
+            lesson:null
+        },
+        methods: {
+            learnLesson(lesson) {
+                let toPost= {};
+                toPost.method="getLessonContent";
+                toPost.courseID=this.course.courseID;
+                toPost.lessonID=lesson.lessonID;
+                axios.post("http://localhost:8080/week5/BaseServlet",toPost).then(
+                    (result)=>{
+                        // console.log(result.data);
+                        this.lesson=result.data;
+                        this.lessonContextVisible=true;
+                    }
+                )
+            }
+        },
+        mounted() {
+            //1. 获得url中的courseID
+            let url = window.location.href;
+            let dz_url = url.split('#')[0];                //获取#/之前的字符串
+            let cs = dz_url.split('?')[1];                //获取?之后的参数字符串
+            let cs_arr = cs.split('=');                    //参数字符串分割为数组
+            let courseID = cs_arr[1];
+            //2. 根据courseID获取信息
+            let toPost = {};
+            toPost.method = "learnCourse";
+            toPost.courseID = courseID;
+            axios.post("http://localhost:8080/week5/BaseServlet", JSON.stringify(toPost)).then(
+                (result) => {
+                    console.log(result.data);
+                    //1. 解析课程响应结果
+                    this.course.courseName = result.data.courseName;
+                    this.course.courseID = result.data.courseID;
+                    this.course.courseDescription = result.data.courseDescription;
+                    this.course.courseID = result.data.courseID;
+                    this.course.courseStartTime = result.data.courseStartTime;
+                    this.course.courseEndTime = result.data.courseEndTime;
+                }
+            )
+            //3. 根据课程ID获取课程内容
+            let toPost2 = {};
+            toPost2.method = "getLessons";
+            toPost2.courseID = courseID;
+            axios.post("http://localhost:8080/week5/BaseServlet", JSON.stringify(toPost2)).then(
+                (result) => {
+                    this.course.lessons = result.data;
+                }
+            )
+        }
+    })
+</script>
+</body>
+</html>
