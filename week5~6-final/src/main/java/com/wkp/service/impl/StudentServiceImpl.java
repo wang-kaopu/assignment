@@ -2,6 +2,7 @@ package com.wkp.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.wkp.po.Course;
+import com.wkp.po.Problem;
 import com.wkp.po.Student;
 import com.wkp.service.StudentService;
 import com.wkp.utils.JDBCUtils;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class StudentServiceImpl implements StudentService {
     @Override
@@ -79,5 +81,45 @@ public class StudentServiceImpl implements StudentService {
         }
         //2. 返回
         return result;
+    }
+
+    public String queryProblems(String sql, Object...params){
+        //1. 查询
+        String result=null;
+        ArrayList<Problem> list = new ArrayList<>();
+        try {
+            ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql, params);
+            while (rs.next()){
+                String context = rs.getString("context");
+                String answer = rs.getString("answer");
+                int courseID = rs.getInt("courseID");
+                int lessonID = rs.getInt("lessonID");
+                list.add(new Problem(context, answer, lessonID, courseID));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        //2. 转为JSON字符串并返回
+        return JSON.toJSONString(list);
+    }
+
+    public List queryCorrectAnswers(String sql, Object... params){
+        //1. 查询正确答案
+        ArrayList<Problem> list = new ArrayList<>();
+        try {
+            ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql, params);
+            while(rs.next()){
+                String context = rs.getString("context");
+                String answer = rs.getString("answer");
+                int courseID = rs.getInt("courseID");
+                int lessonID = rs.getInt("lessonID");
+                String correctAnswer = rs.getString("correctAnswer");
+                int type = rs.getInt("type");
+                list.add(new Problem(context, answer, lessonID, courseID,type,correctAnswer));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 }

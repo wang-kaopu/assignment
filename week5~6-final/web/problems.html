@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>问题 教师页</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="problems">
+    <table>
+        <thead>
+        <tr>
+            <td>章名</td>
+            <td>小节名</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(lesson,index) in lessons">
+            <td>{{lesson.chapterName}}</td>
+            <td>{{lesson.lessonName}}</td>
+            <td><input type="button" value="展开题目" @click="openProblems(lesson)"></td>
+            <td><input type="button" value="添加题目" @click="addProblem(lesson)"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form>
+        <h5>添加题目：</h5>
+        题目：<input type="text" v-model="newProblem.context"><br>
+        题目类型：<input type="radio" value="1" v-model="newProblem.type">选择题 <input type="radio" value="2" v-model="newProblem.type">简答题
+        参考答案：
+        <div v-if="newProblem.type==1">
+            <input type="radio" @click="newProblem.correctAnswer=1">A
+            <input type="radio" @click="newProblem.correctAnswer=2">B
+            <input type="radio" @click="newProblem.correctAnswer=3">C
+            <input type="radio" @click="newProblem.correctAnswer=4">D
+        </div>
+        <input v-if="newProblem.type==2" type="text" v-model="newProblem.correctAnswer">
+    </form>
+    <!--展示该小节题目-->
+    <table border="1">
+        <thead>
+        <tr>
+            <td>序号</td>
+            <td>题目</td>
+            <td>参考答案</td>
+            <td>作答列表</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(problem, index) in problems">
+            <td>{{index+1}}</td>
+            <td>{{problem.context}}</td>
+            <td>{{problem.correctAnswer}}</td>
+            <td v-for="(answer, index) in answers">
+                {{answer.personID}}:{{answer.answer}}<br>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    new Vue({
+        el: "#problems",
+        data: {
+            lessons: null,
+            problems: null,
+            newProblem:{
+                context:null,
+                type:null,
+                correctAnswer:null
+            },
+            courseID:null
+        },
+        methods: {
+            addProblem(lesson){
+                let toPost={};
+                toPost.method="addProblem";
+                toPost.lessonID=lesson.lessonID;
+                toPost.courseID=this.courseID;
+                toPost.newProblem=this.newProblem;
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    (result)=>{
+                        if(result.data.update>0){
+                            alert("添加成功");
+                        }else{
+                            alert("添加失败，请重试");
+                        }
+                    }
+                )
+            },
+            openProblems(lesson) {
+                //获取本小节题目
+                let toPost = {};
+                // toPost.method = "commitProblems";
+                // toPost.problems=this.problems;
+                // axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                //     (result) => {
+                //         this.problems = result.data.list;
+                //     }
+                // )
+                toPost.courseID=this.courseID;
+                toPost.lessonID=lesson.lessonID;
+                toPost.method="teacherOpenProblems";
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    (result)=>{
+                        this.problems=result.data;
+                    }
+                );
+            }
+        },
+        mounted() {
+            //1. 获得url中的courseID
+            let url = window.location.href;
+            let dz_url = url.split('#')[0];                //获取#/之前的字符串
+            let cs = dz_url.split('?')[1];                //获取?之后的参数字符串
+            let cs_arr = cs.split('=');                    //参数字符串分割为数组
+            let courseID = cs_arr[1];
+            this.courseID=courseID;
+            //2. 根据courseID获取小节列表
+            let toPost = {};
+            toPost.method = "getLessons";
+            toPost.courseID = courseID;
+            axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                (result) => {
+                    console.log("2." + result.data);
+                    this.lessons = result.data;
+                }
+            )
+            //3. 根据选择的小节展示题目以及答题情况
+
+        }
+    })
+</script>
+</body>
+</html>

@@ -24,6 +24,8 @@
             <td>{{course.courseEndTime}}</td>
             <td>{{course.studentNumberLimitation}}</td>
             <td><input type="button" value="进入讨论" @click="Discussion(course)"></td>
+            <td><input type="button" value="学习情况" @click="learningSituation(course)"></td>
+            <td><input type="button" value="题目页面" @click="toProblems(course)"></td>
         </tr>
     </table>
     <div v-if="visible.discussion==true">
@@ -47,64 +49,77 @@
         </form>
     </div>
 </div>
-<script>
-    new Vue({
-            el: "#manageCourses",
-            data: {
-                courses: [],
-                discussions: [],
-                visible: {
-                    discussion: false
+    <script>
+        new Vue({
+                el: "#manageCourses",
+                data: {
+                    courses: [],
+                    discussions: [],
+                    visible: {
+                        discussion: false
+                    },
+                    currentCourse: null,
+                    toSend: null
                 },
-                currentCourse: null,
-                toSend: null
-            },
-            methods: {
-                Discussion(course) {
-                    //1. 请求课程对应的讨论区
+                methods: {
+                    toProblems(course) {
+                        window.location.href = "http://localhost:8080/week5/problems.html?courseID="+course.courseID;
+                    },
+                    learningSituation(course) {
+                        // 没写完呢~~~~~~~~~~~~~~~~~~~~~~~~
+                        let toPost = {};
+                        toPost.method = "learningSituation";
+                        axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                            (result) => {
+                                console.log(result.data);
+                            }
+                        )
+                    },
+                    Discussion(course) {
+                        //1. 请求课程对应的讨论区
+                        let toPost = {};
+                        toPost.method = "getDiscussion";
+                        toPost.courseID = course.courseID;
+                        this.currentCourse = course;
+                        axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                            (result) => {
+                                this.discussions = result.data;
+                            }
+                        );
+                        //2. 展示讨论区
+                        this.visible.discussion = true;
+                    },
+                    sendDiscussion() {
+                        let toPost = {};
+                        toPost.method = "sendDiscussion";
+                        toPost.message = this.toSend;
+                        toPost.courseID = this.currentCourse.courseID;
+                        //发送一条讨论
+                        axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                            (result) => {
+                                console.log(result.data);
+                                if (result.status === 200 && result.data.update > 0) {
+                                    this.$forceUpdate();
+                                    alert("发送成功");
+                                    this.toSend = null;
+                                } else {
+                                    alert("发送失败，请重试");
+                                }
+                            }
+                        )
+                    }
+                },
+                mounted() {
                     let toPost = {};
-                    toPost.method = "getDiscussion";
-                    toPost.courseID = course.courseID;
-                    this.currentCourse = course;
+                    toPost.method = "manageCourses";
                     axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
                         (result) => {
-                            this.discussions = result.data;
+                            this.courses = result.data;
                         }
                     );
-                    //2. 展示讨论区
-                    this.visible.discussion = true;
-                },
-                sendDiscussion() {
-                    let toPost = {};
-                    toPost.method = "sendDiscussion";
-                    toPost.message = this.toSend;
-                    toPost.courseID = this.currentCourse.courseID;
-                    //发送一条讨论
-                    axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                        (result) => {
-                            console.log(result.data);
-                            if (result.status === 200 && result.data.update > 0) {
-                                this.$forceUpdate();
-                                alert("发送成功");
-                                this.toSend = null;
-                            } else {
-                                alert("发送失败，请重试");
-                            }
-                        }
-                    )
                 }
-            },
-            mounted() {
-                let toPost = {};
-                toPost.method = "manageCourses";
-                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                    (result) => {
-                        this.courses = result.data;
-                    }
-                );
             }
-        }
-    )
-</script>
+        )
+    </script>
 </body>
 </html>

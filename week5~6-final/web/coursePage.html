@@ -23,6 +23,7 @@
             <td>{{lesson.chapterName}}</td>
             <td>{{lesson.lessonName}}</td>
             <td><input type="button" value="开始学习" @click="learnLesson(lesson)"></td>
+            <td><input type="button" value="展开题目" @click="problems(lesson)"></td>
         </tr>
     </table>
     <div v-if="lessonContextVisible==true">
@@ -51,6 +52,40 @@
             <input type="text" v-model="toSend"><input type="button" value="发送" @click="sendDiscussion">
         </form>
     </div>
+    <div v-if="visible.problems==true">
+        <table>
+            <thead>
+            <tr>
+                <td>题目序号</td>
+                <td>题目</td>
+                <td>答案</td>
+                <td v-if="visible.return==true">参考答案</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(problem, index) in problems">
+                <td>{{index}}</td>
+                <td>{{problem.context}}</td>
+                <td v-if="problem.type==1">
+                    <!--                        选择题-->
+                    <div v-for="(choice,index) in problem.choices">
+                        <input type="radio" @click="problem.answer=index+1">{{index + 1}}.{{choice}}
+                    </div>
+                </td>
+                <td v-if="problem.type==2">
+                    <!--                        简答题-->
+                    <input type="text" v-model="problem.answer">
+                </td>
+                <td v-if="visible.return==true" v-for="(returnProblem, index) in returnList">
+                    <!--                    参考答案-->
+                    {{returnList.correctAnswer}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="button" @click="commitProblems()">
+        得分：{{returnScore}}
+    </div>
 </div>
 <script>
     new Vue({
@@ -64,33 +99,62 @@
                 courseEndTime: null,
                 lessons: [],
             },
-            visible:{
-                discussion:false
+            visible: {
+                discussion: false,
+                problems: false,
+                return: true
             },
-            lessonContextVisible:false,
-            lesson:null,
-            problems:null,
-            discussions:null,
-            toSend:null,
-            currentCourse:null
+            lessonContextVisible: false,
+            lesson: null,
+            problems: null,
+            discussions: null,
+            toSend: null,
+            currentCourse: null,
+            returnList: null,
+            returnScore: null
         },
         methods: {
+            problems(lesson) {
+                let toPost = {};
+                toPost.lessonID = lesson.lessonID;
+                toPost.courseID = this.currentCourse.courseID;
+                toPost.method = "getProblems";
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    () => {
+                        this.visible.problems = true;
+                    }
+                )
+            },
+            commitProblems() {
+                let toPost = {};
+                toPost.problems = JSON.stringify(this.problems)
+                toPost.method = "commitProblems";
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    (result) => {
+                        //1. 拿到校对结果
+                        console.log(result.data);
+                        //2. 解析结果，有score和correctAnswers
+                        this.returnList = result.data.list;
+                        this.returnScore = result.data.score;
+                        this.return = true;
+                    }
+                )
+            },
             learnLesson(lesson) {
-                let toPost= {};
-                toPost.method="getLessonContent";
-                toPost.courseID=this.course.courseID;
-                toPost.lessonID=lesson.lessonID;
-                axios.post("http://localhost:8080/week5/BaseServlet",toPost).then(
-                    (result)=>{
-                        // console.log(result.data);
-                        this.lesson=result.data;
-                        this.lessonContextVisible=true;
+                let toPost = {};
+                toPost.method = "getLessonContent";
+                toPost.courseID = this.course.courseID;
+                toPost.lessonID = lesson.lessonID;
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    (result) => {
+                        this.lesson = result.data;
+                        this.lessonContextVisible = true;
                     }
                 );
-                toPost.method="getLessonProblems";
-                axios.post("http://localhost:8080/week5/BaseServlet",toPost).then(
-                    (result)=>{
-                        this.problems=result.data;
+                toPost.method = "getLessonProblems";
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    (result) => {
+                        this.problems = result.data;
                     }
                 )
             },
@@ -113,9 +177,9 @@
                     }
                 )
             },
-            Discussion(){
+            Discussion() {
                 //1.请求课程对应的讨论区
-                this.visible.discussion=true;
+                this.visible.discussion = true;
                 let toPost3 = {};
                 toPost3.method = "getDiscussion";
                 toPost3.courseID = this.course.courseID;
@@ -142,7 +206,6 @@
             toPost.courseID = courseID;
             axios.post("http://localhost:8080/week5/BaseServlet", JSON.stringify(toPost)).then(
                 (result) => {
-                    // console.log(result.data);
                     //1. 解析课程响应结果
                     this.course.courseName = result.data.courseName;
                     this.course.courseID = result.data.courseID;
@@ -156,7 +219,7 @@
             let toPost2 = {};
             toPost2.method = "getLessons";
             toPost2.courseID = courseID;
-            axios.post("http://localhost:8080/week5/BaseServlet", JSON.stringify(toPost2)).then(
+            axios.post("BaseServlet", JSON.stringify(toPost2)).then(
                 (result) => {
                     this.course.lessons = result.data;
                 }

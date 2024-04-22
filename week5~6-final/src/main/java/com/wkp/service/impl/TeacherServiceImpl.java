@@ -83,4 +83,22 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return list;
     }
+
+    public List<Problem> queryProblems(String sql, Object courseID, Object lessonID) {
+        ArrayList<Problem> list = new ArrayList<>();
+        try {
+            ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql, courseID, lessonID);
+            while (rs.next()) {
+                String context = rs.getString("context");
+                int type = rs.getInt("type");
+                String correctAnswer = rs.getString("correctAnswer");
+                int lessonID1 = rs.getInt("lessonID");
+                int courseID1 = rs.getInt("courseID");
+                list.add(new Problem(context, (String) null, lessonID1, courseID1, type, correctAnswer));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
 }

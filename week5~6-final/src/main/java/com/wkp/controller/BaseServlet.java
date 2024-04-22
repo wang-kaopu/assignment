@@ -191,4 +191,37 @@ public class BaseServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+
+    public void getProblems(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("GetProblemsServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void commitProblems(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("CommitProblemsServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addProblem(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("AddProblemServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void teacherOpenProblems(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("TeacherOpenProblemsServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

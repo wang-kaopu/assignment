@@ -81,11 +81,11 @@ public class JDBCUtils {
         }
 
     }
-    public static boolean Query(String sql, String... params) throws SQLException {
+    public static boolean Query(String sql, Object... params) throws SQLException {
         Connection conn = getConn();
         PreparedStatement ps = conn.prepareStatement(sql);
         int i=1;
-        for (String param : params) {
+        for (Object param : params) {
             //System.out.println("param:"+param);
             ps.setObject(i,param);
             i++;
