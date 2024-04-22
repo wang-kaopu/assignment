@@ -5,9 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.wkp.controller.BaseServlet;
 import com.wkp.po.Answer;
 import com.wkp.po.Problem;
-import com.wkp.po.Student;
 import com.wkp.po.User;
-import com.wkp.service.StudentService;
 import com.wkp.service.impl.StudentServiceImpl;
 import com.wkp.utils.JDBCUtils;
 

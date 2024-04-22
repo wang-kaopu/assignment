@@ -94,7 +94,8 @@ public class TeacherServiceImpl implements TeacherService {
                 String correctAnswer = rs.getString("correctAnswer");
                 int lessonID1 = rs.getInt("lessonID");
                 int courseID1 = rs.getInt("courseID");
-                list.add(new Problem(context, (String) null, lessonID1, courseID1, type, correctAnswer));
+                String answerList = rs.getString("answerList");
+                list.add(new Problem(context, (String) null, lessonID1, courseID1, type, correctAnswer, (ArrayList<Answer>) JSON.parseArray(answerList,Answer.class)));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

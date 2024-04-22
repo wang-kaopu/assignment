@@ -22,12 +22,13 @@ public class TeacherOpenProblemsServlet extends BaseServlet {
         JSONObject jsonObject = JSON.parseObject(requestString);
         Object courseID = jsonObject.get("courseID");
         Object lessonID = jsonObject.get("lessonID");
-        //2. 查询
+        //2. 查询问题
         TeacherServiceImpl teacherService = new TeacherServiceImpl();
         String querySql = "SELECT * FROM PROBLEMS WHERE COURSEID = ? AND LESSONID = ?;";
         List<Problem> problems = teacherService.queryProblems(querySql, courseID, lessonID);
         String jsonString = JSON.toJSONString(problems);
         //3. 响应
+        System.out.println(jsonString);
         resp.getWriter().write(jsonString);
     }
 }

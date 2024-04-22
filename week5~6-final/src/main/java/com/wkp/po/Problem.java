@@ -1,5 +1,7 @@
 package com.wkp.po;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Problem {
@@ -9,6 +11,17 @@ public class Problem {
     private int courseID;
     private int type;
     private String correctAnswer;
+    private ArrayList<Answer> answerList;
+
+    public Problem(String context, String answer, int lessonID, int courseID, int type, String correctAnswer, ArrayList<Answer> answerList) {
+        this.context = context;
+        this.answer = answer;
+        this.lessonID = lessonID;
+        this.courseID = courseID;
+        this.type = type;
+        this.correctAnswer = correctAnswer;
+        this.answerList = answerList;
+    }
 
     public int getType() {
         return type;
@@ -16,6 +29,14 @@ public class Problem {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public ArrayList<Answer> getAnswerList() {
+        return answerList;
+    }
+
+    public void setAnswerList(ArrayList<Answer> answerList) {
+        this.answerList = answerList;
     }
 
     public Problem(String context, String answer, int lessonID, int courseID, int type, String correctAnswer) {
@@ -99,5 +120,18 @@ public class Problem {
     @Override
     public int hashCode() {
         return Objects.hash(context, lessonID, courseID);
+    }
+
+    @Override
+    public String toString() {
+        return "Problem{" +
+                "context='" + context + '\'' +
+                ", answer='" + answer + '\'' +
+                ", lessonID=" + lessonID +
+                ", courseID=" + courseID +
+                ", type=" + type +
+                ", correctAnswer='" + correctAnswer + '\'' +
+                ", answerList='" + answerList + '\'' +
+                '}';
     }
 }
