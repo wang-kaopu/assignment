@@ -1,6 +1,7 @@
 package com.wkp.controller.student;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.wkp.controller.BaseServlet;
 import com.wkp.po.Answer;
 import com.wkp.po.Problem;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +28,8 @@ public class CommitProblemsServlet extends BaseServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //1. 获取请求校对的题目
         String requestString = (String) req.getAttribute("requestString");
-        List<Problem> problems = JSON.parseArray(requestString, Problem.class);
+        JSONObject jsonObject = JSON.parseObject(requestString);
+        List<Problem> problems = JSON.parseArray((String) jsonObject.get("problems"), Problem.class);
         Problem first = problems.get(0);
         int courseID = first.getCourseID();
         int lessonID = first.getLessonID();
@@ -46,7 +49,7 @@ public class CommitProblemsServlet extends BaseServlet {
             //记录答题情况
             Problem currentProblem = problems.get(i);
             String context = currentProblem.getContext();
-            String querySql = "SELECT ANSWERLIST FROM PROBLEMS WHERE COURSEID = ?, LESSONID = ? AND CONTEXT = ?;";
+            String querySql = "SELECT ANSWERLIST FROM PROBLEMS WHERE COURSEID = ? AND LESSONID = ? AND CONTEXT = ?;";
             //更新该problem记录的answerList
             String answerList = null;
             try {
@@ -58,9 +61,12 @@ public class CommitProblemsServlet extends BaseServlet {
                 throw new RuntimeException(e);
             }
             List<Answer> answers = JSON.parseArray(answerList, Answer.class);
+            if(answers==null){
+                answers = new ArrayList<>();
+            }
             answers.add(new Answer(currentProblem.getAnswer(), Integer.parseInt(((User)req.getSession().getAttribute("currentUser")).getPersonID())));
             String newAnswers = JSON.toJSONString(answers);
-            String updateSql = "UPDATE PROBLEMS SET ANSWERLIST = ? WHERE COURSEID = ?,LESSONID = ? AND CONTEXT = ?;";
+            String updateSql = "UPDATE PROBLEMS SET ANSWERLIST = ? WHERE COURSEID = ? AND LESSONID = ? AND CONTEXT = ?;";
             JDBCUtils.update(updateSql,newAnswers,courseID,lessonID,context);
         }
         //5. 响应

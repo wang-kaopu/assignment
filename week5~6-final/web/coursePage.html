@@ -23,7 +23,7 @@
             <td>{{lesson.chapterName}}</td>
             <td>{{lesson.lessonName}}</td>
             <td><input type="button" value="开始学习" @click="learnLesson(lesson)"></td>
-            <td><input type="button" value="展开题目" @click="problems(lesson)"></td>
+            <td><input type="button" value="展开题目" @click="openProblems(lesson)"></td>
         </tr>
     </table>
     <div v-if="lessonContextVisible==true">
@@ -53,7 +53,7 @@
         </form>
     </div>
     <div v-if="visible.problems==true">
-        <table>
+        <table border="1">
             <thead>
             <tr>
                 <td>题目序号</td>
@@ -64,13 +64,17 @@
             </thead>
             <tbody>
             <tr v-for="(problem, index) in problems">
-                <td>{{index}}</td>
+                <td>{{index+1}}</td>
                 <td>{{problem.context}}</td>
                 <td v-if="problem.type==1">
                     <!--                        选择题-->
-                    <div v-for="(choice,index) in problem.choices">
-                        <input type="radio" @click="problem.answer=index+1">{{index + 1}}.{{choice}}
-                    </div>
+<!--                    <div v-for="(choice,index) in problem.choices">-->
+<!--                        <input type="radio" @click="problem.answer=index+1">{{index + 1}}.{{choice}}-->
+<!--                    </div>-->
+                    <input type="radio" value="1" v-model="problem.answer">A
+                    <input type="radio" value="2" v-model="problem.answer">B
+                    <input type="radio" value="3" v-model="problem.answer">C
+                    <input type="radio" value="4" v-model="problem.answer">D
                 </td>
                 <td v-if="problem.type==2">
                     <!--                        简答题-->
@@ -83,7 +87,7 @@
             </tr>
             </tbody>
         </table>
-        <input type="button" @click="commitProblems()">
+        <input type="button" value="提交答案" @click="commitProblems()"><br>
         得分：{{returnScore}}
     </div>
 </div>
@@ -114,14 +118,17 @@
             returnScore: null
         },
         methods: {
-            problems(lesson) {
+            openProblems(lesson) {
+                this.visible.return=false;
                 let toPost = {};
                 toPost.lessonID = lesson.lessonID;
-                toPost.courseID = this.currentCourse.courseID;
+                toPost.courseID = this.course.courseID;
                 toPost.method = "getProblems";
                 axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                    () => {
+                    (result) => {
                         this.visible.problems = true;
+                        this.problems=result.data;
+                        // console.log(this.problems);
                     }
                 )
             },
@@ -162,7 +169,7 @@
                 let toPost = {};
                 toPost.method = "sendDiscussion";
                 toPost.message = this.toSend;
-                toPost.courseID = this.currentCourse.courseID;
+                toPost.courseID = this.course.courseID;
                 //发送一条讨论
                 axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
                     (result) => {

@@ -91,10 +91,10 @@ public class StudentServiceImpl implements StudentService {
             ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql, params);
             while (rs.next()){
                 String context = rs.getString("context");
-                String answer = rs.getString("answer");
                 int courseID = rs.getInt("courseID");
                 int lessonID = rs.getInt("lessonID");
-                list.add(new Problem(context, answer, lessonID, courseID));
+                int type=rs.getInt("type");
+                list.add(new Problem(context,lessonID, courseID,type));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -110,12 +110,11 @@ public class StudentServiceImpl implements StudentService {
             ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql, params);
             while(rs.next()){
                 String context = rs.getString("context");
-                String answer = rs.getString("answer");
                 int courseID = rs.getInt("courseID");
                 int lessonID = rs.getInt("lessonID");
                 String correctAnswer = rs.getString("correctAnswer");
                 int type = rs.getInt("type");
-                list.add(new Problem(context, answer, lessonID, courseID,type,correctAnswer));
+                list.add(new Problem(context, null, lessonID, courseID,type,correctAnswer));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

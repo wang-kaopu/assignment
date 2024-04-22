@@ -42,6 +42,13 @@ public class Problem {
         this.correctAnswer = correctAnswer;
     }
 
+    public Problem(String context, int lessonID, int courseID, int type) {
+        this.context = context;
+        this.lessonID = lessonID;
+        this.courseID = courseID;
+        this.type = type;
+    }
+
     public String getContext() {
         return context;
     }
