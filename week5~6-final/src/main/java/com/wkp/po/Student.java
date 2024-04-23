@@ -7,7 +7,6 @@ public class Student extends User{
     private String email;
     private String studentDescription;
     private int studentGrade;
-
     public String getStudentName() {
         return studentName;
     }

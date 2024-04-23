@@ -45,16 +45,13 @@ public class JsonUtils {
     public static String mapToJSONString(Map<String,String> map,String... keys){
         StringBuilder builder = new StringBuilder();
         builder.append('{');
-        //System.out.println(Arrays.toString(keys));
         for (String key : keys) {
-        //    System.out.println(key);
             builder.append("\"").append(key).append("\"").append(":");
             builder.append(map.get(key)).append(",");
         }
         String substring = builder.substring(0, builder.length() - 1);
         builder = new StringBuilder(substring);
         builder.append('}');
-        System.out.println(builder);
         return builder.toString();
     }
 

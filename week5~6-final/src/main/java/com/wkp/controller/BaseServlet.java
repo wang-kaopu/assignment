@@ -52,7 +52,6 @@ public class BaseServlet extends HttpServlet {
             //2. 设置session域对象和req域对象
             this.currentUser = (User) session.getAttribute("currentUser");
             session.setAttribute("currentUser",this.currentUser);
-            //session.setAttribute("currentStudent",new Student(Identity.student, this.currentUser.getPersonID(), this.currentUser.getName()));
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -224,4 +223,11 @@ public class BaseServlet extends HttpServlet {
         }
     }
 
+    public void learningSituation(HttpServletRequest req,HttpServletResponse resp){
+        try {
+            req.getRequestDispatcher("LearningSituationServlet").forward(req,resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

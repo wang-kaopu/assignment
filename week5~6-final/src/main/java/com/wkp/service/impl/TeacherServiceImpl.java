@@ -30,7 +30,6 @@ public class TeacherServiceImpl implements TeacherService {
         int studentNumberLimitation = course.getStudentNumberLimitation();
         String teacherID = currentUser.getPersonID();
         String teacherName = currentUser.getName();
-        //String lessonsJsonString = JSON.toJSONString(course.getLessons());
         List<Lesson> lessons = course.getLessons();
 
         String lessonInsertSql =
@@ -47,7 +46,6 @@ public class TeacherServiceImpl implements TeacherService {
 
         String courseInsertSql =
                 "INSERT IGNORE INTO COURSES (LESSONS, COURSEID, COURSENAME, COURSEDESCRIPTION, COURSESTARTTIME,COURSEENDTIME,STUDENTNUMBERLIMITATION,TEACHERID,TEACHERNAME) VALUE (?,?,?,?,?,?,?,?,?);";
-//        int courseExecute = JDBCUtils.update(courseInsertSql, lessons.toString(), courseID, courseName, courseDescription, courseStartTime, courseEndTime, studentNumberLimitation, teacherID, teacherName);
         int courseExecute = JDBCUtils.update(courseInsertSql, JSON.toJSONString(lessons), courseID, courseName, courseDescription, courseStartTime, courseEndTime, studentNumberLimitation, teacherID, teacherName);
 
         Map<String, Integer> executeMap = new HashMap<>();

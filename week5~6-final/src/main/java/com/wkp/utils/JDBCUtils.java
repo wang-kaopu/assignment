@@ -52,7 +52,6 @@ public class JDBCUtils {
             ps = conn.prepareStatement(sql);
             int i = 1;
             for (Object parm : parms) {
-                //System.out.println(parm);
                 ps.setObject(i,parm);
                 i++;
             }

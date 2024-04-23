@@ -1,5 +1,7 @@
 package com.wkp.po;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Lesson {
@@ -8,6 +10,16 @@ public class Lesson {
     private String lessonName;
     private int lessonID;//四位数
     private String lessonContext;
+    private List<String> studyRecord;
+
+    public List<String> getStudyRecord() {
+        return studyRecord;
+    }
+
+    public Lesson(String lessonName, List<String> studyRecord) {
+        this.lessonName = lessonName;
+        this.studyRecord = studyRecord;
+    }
 
     public String getLessonContext() {
         return lessonContext;

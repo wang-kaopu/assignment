@@ -68,9 +68,6 @@
                 <td>{{problem.context}}</td>
                 <td v-if="problem.type==1">
                     <!--                        选择题-->
-<!--                    <div v-for="(choice,index) in problem.choices">-->
-<!--                        <input type="radio" @click="problem.answer=index+1">{{index + 1}}.{{choice}}-->
-<!--                    </div>-->
                     <input type="radio" value="1" v-model="problem.answer">A
                     <input type="radio" value="2" v-model="problem.answer">B
                     <input type="radio" value="3" v-model="problem.answer">C

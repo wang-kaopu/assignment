@@ -1,9 +1,11 @@
 package com.wkp.service.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.filter.SimplePropertyPreFilter;
 import com.wkp.po.Course;
 import com.wkp.po.Problem;
 import com.wkp.po.Student;
+import com.wkp.po.User;
 import com.wkp.service.StudentService;
 import com.wkp.utils.JDBCUtils;
 
@@ -83,18 +85,18 @@ public class StudentServiceImpl implements StudentService {
         return result;
     }
 
-    public String queryProblems(String sql, Object...params){
+    public String queryProblems(String sql, Object... params) {
         //1. 查询
-        String result=null;
+        String result = null;
         ArrayList<Problem> list = new ArrayList<>();
         try {
             ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql, params);
-            while (rs.next()){
+            while (rs.next()) {
                 String context = rs.getString("context");
                 int courseID = rs.getInt("courseID");
                 int lessonID = rs.getInt("lessonID");
-                int type=rs.getInt("type");
-                list.add(new Problem(context,lessonID, courseID,type));
+                int type = rs.getInt("type");
+                list.add(new Problem(context, lessonID, courseID, type));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -103,22 +105,50 @@ public class StudentServiceImpl implements StudentService {
         return JSON.toJSONString(list);
     }
 
-    public List queryCorrectAnswers(String sql, Object... params){
+    public List queryCorrectAnswers(String sql, Object... params) {
         //1. 查询正确答案
         ArrayList<Problem> list = new ArrayList<>();
         try {
             ResultSet rs = JDBCUtils.QueryAndGetResultSet(sql, params);
-            while(rs.next()){
+            while (rs.next()) {
                 String context = rs.getString("context");
                 int courseID = rs.getInt("courseID");
                 int lessonID = rs.getInt("lessonID");
                 String correctAnswer = rs.getString("correctAnswer");
                 int type = rs.getInt("type");
-                list.add(new Problem(context, null, lessonID, courseID,type,correctAnswer));
+                list.add(new Problem(context, null, lessonID, courseID, type, correctAnswer));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return list;
+    }
+
+    public void addStudyRecord(User user, Integer courseID, Integer lessonID) {
+        //1. 查询
+        String studyrecord = null;
+        String querySql = "SELECT STUDYRECORD FROM LESSONS WHERE COURSEID = ? AND LESSONID = ?;";
+        ResultSet rs = null;
+        try {
+            rs = JDBCUtils.QueryAndGetResultSet(querySql, courseID, lessonID);
+            while (rs.next()) {
+                studyrecord = rs.getString("studyrecord");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        //2. 转换
+        List<User> list = new ArrayList<>();
+        if (studyrecord != null) {
+            list = JSON.parseArray(studyrecord, User.class);
+        }
+        if(list==null){
+            list = new ArrayList<>();
+        }
+        //3. 更新
+        SimplePropertyPreFilter simplePropertyPreFilter = new SimplePropertyPreFilter(User.class, "personID", "name");
+        list.add(user);
+        String insertSql = "UPDATE LESSONS SET STUDYRECORD = ? WHERE COURSEID = ? AND LESSONID = ?;";
+        JDBCUtils.update(insertSql, JSON.toJSONString(list,simplePropertyPreFilter), courseID, lessonID);
     }
 }

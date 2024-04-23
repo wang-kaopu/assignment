@@ -2,7 +2,11 @@ package com.wkp.controller.student;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.filter.SimplePropertyPreFilter;
 import com.wkp.controller.BaseServlet;
+import com.wkp.po.Student;
+import com.wkp.po.User;
+import com.wkp.service.impl.StudentServiceImpl;
 import com.wkp.utils.JDBCUtils;
 
 import javax.servlet.ServletException;
@@ -33,6 +37,23 @@ public class LearnLessonServlet extends BaseServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        //3. 记录学习轨迹
+        StudentServiceImpl studentService = new StudentServiceImpl();
+        String queryNameSql = "SELECT * FROM STUDENTS WHERE PERSONID = ?;";
+        Student currentStudent = (Student) req.getSession().getAttribute("currentStudent");
+        String studentName = null;
+        Integer personID = null;
+        try {
+            ResultSet rs = JDBCUtils.QueryAndGetResultSet(queryNameSql, currentStudent.getPersonID());
+            while (rs.next()) {
+                studentName = rs.getString("studentName");
+                personID = rs.getInt("personID");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        User user = new User(String.valueOf(personID), studentName);
+        studentService.addStudyRecord(user,courseID,lessonID);
         //3. 响应
         resp.getWriter().write(lessonContext);
     }

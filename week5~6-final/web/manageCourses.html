@@ -48,78 +48,104 @@
             <input type="text" v-model="toSend"><input type="button" value="发送" @click="sendDiscussion">
         </form>
     </div>
+    <div v-if="visible.learningSituation==true">
+        <h5>学习情况</h5>
+        <table border="1">
+            <thead>
+            <tr>
+                <td>小节名称</td>
+                <td>已经学习的学生</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(lesson,index) in lessons">
+                <td>{{lesson.lessonName}}</td>
+                <td>
+                    <div v-for="(user, index) in lesson.studyRecord">
+                        {{user.personID}}:{{user.name}}<br>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-    <script>
-        new Vue({
-                el: "#manageCourses",
-                data: {
-                    courses: [],
-                    discussions: [],
-                    visible: {
-                        discussion: false
-                    },
-                    currentCourse: null,
-                    toSend: null
+<script>
+    new Vue({
+            el: "#manageCourses",
+            data: {
+                courses: [],
+                discussions: [],
+                visible: {
+                    discussion: false,
+                    learningSituation: false,
                 },
-                methods: {
-                    toProblems(course) {
-                        window.location.href = "http://localhost:8080/week5/problems.html?courseID="+course.courseID;
-                    },
-                    learningSituation(course) {
-                        // 没写完呢~~~~~~~~~~~~~~~~~~~~~~~~
-                        let toPost = {};
-                        toPost.method = "learningSituation";
-                        axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                            (result) => {
-                                console.log(result.data);
-                            }
-                        )
-                    },
-                    Discussion(course) {
-                        //1. 请求课程对应的讨论区
-                        let toPost = {};
-                        toPost.method = "getDiscussion";
-                        toPost.courseID = course.courseID;
-                        this.currentCourse = course;
-                        axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                            (result) => {
-                                this.discussions = result.data;
-                            }
-                        );
-                        //2. 展示讨论区
-                        this.visible.discussion = true;
-                    },
-                    sendDiscussion() {
-                        let toPost = {};
-                        toPost.method = "sendDiscussion";
-                        toPost.message = this.toSend;
-                        toPost.courseID = this.currentCourse.courseID;
-                        //发送一条讨论
-                        axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                            (result) => {
-                                console.log(result.data);
-                                if (result.status === 200 && result.data.update > 0) {
-                                    this.$forceUpdate();
-                                    alert("发送成功");
-                                    this.toSend = null;
-                                } else {
-                                    alert("发送失败，请重试");
-                                }
-                            }
-                        )
-                    }
+                currentCourse: null,
+                toSend: null,
+                lessons: null
+            },
+            methods: {
+                toProblems(course) {
+                    window.location.href = "http://localhost:8080/week5/problems.html?courseID=" + course.courseID;
                 },
-                mounted() {
+                learningSituation(course) {
                     let toPost = {};
-                    toPost.method = "manageCourses";
+                    toPost.method = "learningSituation";
+                    toPost.courseID = course.courseID;
                     axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
                         (result) => {
-                            this.courses = result.data;
+                            //lessons[lesson{lessonID,records}]
+                            this.lessons = result.data;
+                            console.log(result.data);
                         }
                     );
+                    this.visible.learningSituation = true;
+                },
+                Discussion(course) {
+                    //1. 请求课程对应的讨论区
+                    let toPost = {};
+                    toPost.method = "getDiscussion";
+                    toPost.courseID = course.courseID;
+                    this.currentCourse = course;
+                    axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                        (result) => {
+                            this.discussions = result.data;
+                        }
+                    );
+                    //2. 展示讨论区
+                    this.visible.discussion = true;
+                },
+                sendDiscussion() {
+                    let toPost = {};
+                    toPost.method = "sendDiscussion";
+                    toPost.message = this.toSend;
+                    toPost.courseID = this.currentCourse.courseID;
+                    //发送一条讨论
+                    axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                        (result) => {
+                            console.log(result.data);
+                            if (result.status === 200 && result.data.update > 0) {
+                                this.$forceUpdate();
+                                alert("发送成功");
+                                this.toSend = null;
+                            } else {
+                                alert("发送失败，请重试");
+                            }
+                        }
+                    )
                 }
+            },
+            mounted() {
+                let toPost = {};
+                toPost.method = "manageCourses";
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    (result) => {
+                        this.courses = result.data;
+                    }
+                );
             }
-        )
-    </script>
+        }
+    )
+</script>
 </body>
 </html>

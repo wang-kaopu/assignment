@@ -8,6 +8,11 @@ public class User {
     public User() {
     }
 
+    public User(String personID, String name) {
+        this.personID = personID;
+        this.name = name;
+    }
+
     public Identity getIdentity() {
         return identity;
     }
