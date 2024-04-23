@@ -12,6 +12,25 @@ public class Problem {
     private int type;
     private String correctAnswer;
     private ArrayList<Answer> answerList;
+    private int singleScore;
+
+    public Problem(String context, String answer, int lessonID, int courseID, int type, String correctAnswer, int singleScore) {
+        this.context = context;
+        this.answer = answer;
+        this.lessonID = lessonID;
+        this.courseID = courseID;
+        this.type = type;
+        this.correctAnswer = correctAnswer;
+        this.singleScore = singleScore;
+    }
+
+    public int getSingleScore() {
+        return singleScore;
+    }
+
+    public void setSingleScore(int singleScore) {
+        this.singleScore = singleScore;
+    }
 
     public Problem(String context, String answer, int lessonID, int courseID, int type, String correctAnswer, ArrayList<Answer> answerList) {
         this.context = context;

@@ -13,6 +13,7 @@
     <div id="studentHomepage">
         <input type="button" value="浏览课程" @click="toBrowseCourses()">
         <input type="button" value="个人信息" @click="toStudentInfo()">
+        <input type="button" value="学习轨迹" @click="toStudyTrace()">
     </div>
 </body>
 <script>
@@ -27,6 +28,9 @@
             },
             toStudentInfo:function (){
                 window.location.href="http://localhost:8080/week5/studentInfo.html";
+            },
+            toStudyTrace:function (){
+                window.location.href="http://localhost:8080/week5/studyTrace.html";
             }
         }
     })

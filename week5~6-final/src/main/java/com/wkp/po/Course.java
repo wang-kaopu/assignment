@@ -18,6 +18,11 @@ public class Course {
     private String teacherName;
     private String studentList;
 
+    public Course(int courseID, String courseName) {
+        this.courseID = courseID;
+        this.courseName = courseName;
+    }
+
     @Override
     public String toString() {
         return "Course{" +

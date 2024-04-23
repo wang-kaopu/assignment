@@ -3,9 +3,24 @@ package com.wkp.po;
 public class Answer {
     private String answer;
     private int personID;
+    private int singleScore;
     public Answer(String answer, int personID) {
         this.answer = answer;
         this.personID = personID;
+    }
+
+    public Answer(String answer, int personID, int singleScore) {
+        this.answer = answer;
+        this.personID = personID;
+        this.singleScore = singleScore;
+    }
+
+    public int getSingleScore() {
+        return singleScore;
+    }
+
+    public void setSingleScore(int singleScore) {
+        this.singleScore = singleScore;
     }
 
     public String getAnswer() {

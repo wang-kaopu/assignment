@@ -21,6 +21,17 @@ public class Lesson {
         this.studyRecord = studyRecord;
     }
 
+    public void setStudyRecord(List<String> studyRecord) {
+        this.studyRecord = studyRecord;
+    }
+
+    public Lesson(int courseID, String lessonName, int lessonID, String chapterName) {
+        this.courseID = courseID;
+        this.lessonName = lessonName;
+        this.lessonID = lessonID;
+        this.chapterName=chapterName;
+    }
+
     public String getLessonContext() {
         return lessonContext;
     }

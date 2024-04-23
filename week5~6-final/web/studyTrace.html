@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学习轨迹</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="studyRecord">
+    <h5>已学习的课程：</h5>
+    <table border="1">
+        <thead>
+        <tr>
+            <td>课程名</td>
+            <td>章名-小节名</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(course,index) in studyRecord">
+            <td>{{course.courseName}}</td>
+            <td>
+                <div v-for="(lesson, index) in course.lessons">
+                    {{lesson.chapterName}}-{{lesson.lessonName}}<br>
+                    <input type="button" value="查看题目" @click="getProblemRecord(course.courseID,lesson.lessonID)">
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div v-if="visible.problems==true">
+        <table border="1">
+            <thead>
+            <tr>
+                <td>题目</td>
+                <td>提交的答案</td>
+                <td>参考答案</td>
+                <td>单题得分</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(problem, index) in problems">
+                <td>{{problem.context}}</td>
+                <td>{{problem.answer}}</td>
+                <td>{{problem.correctAnswer}}</td>
+                <td>{{problem.singleScore}}</td>
+            </tr>
+            </tbody>
+        </table><br>
+        得分：{{this.score}}
+    </div>
+</div>
+<script>
+    new Vue({
+        el: "#studyRecord",
+        data: {
+            studyRecord: null,
+            problems: null,
+            visible: {
+                problems: false
+            },
+            score:null
+        },
+        methods: {
+            getProblemRecord(courseID, lessonID) {
+                let toPost = {};
+                toPost.method = "getProblemRecord";
+                toPost.courseID = courseID;
+                toPost.lessonID = lessonID;
+                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                    (result) => {
+                        console.log(result.data);
+                        this.problems = result.data.problems;
+                        this.score=result.data.score;
+                        //展示problems
+                        this.visible.problems = true;
+                    }
+                )
+            }
+        },
+        mounted() {
+            let toPost = {};
+            toPost.method = "getStudyRecord";
+            axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                (result) => {
+                    this.studyRecord = result.data;
+                    // console.log(result.data);
+                }
+            )
+        }
+    })
+</script>
+</body>
+</html>

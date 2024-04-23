@@ -51,7 +51,7 @@ public class BaseServlet extends HttpServlet {
             req.getRequestDispatcher("LoginServlet").forward(req, resp);
             //2. 设置session域对象和req域对象
             this.currentUser = (User) session.getAttribute("currentUser");
-            session.setAttribute("currentUser",this.currentUser);
+            session.setAttribute("currentUser", this.currentUser);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -61,11 +61,11 @@ public class BaseServlet extends HttpServlet {
         try {
             //1. 请求转发到loginServlet
             HttpSession session = req.getSession();
-            session.setAttribute("identity",Identity.teacher);
+            session.setAttribute("identity", Identity.teacher);
             req.getRequestDispatcher("LoginServlet").forward(req, resp);
             //2. 设置session域对象和req域对象
-            req.setAttribute("identity",Identity.teacher);
-            session.setAttribute("currentUser",session.getAttribute("currentUser"));
+            req.setAttribute("identity", Identity.teacher);
+            session.setAttribute("currentUser", session.getAttribute("currentUser"));
             this.currentUser = (User) session.getAttribute("currentUser");
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
@@ -93,141 +93,164 @@ public class BaseServlet extends HttpServlet {
 
     public void getTeacherInfo(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("TeacherInfoServlet").forward(req,resp);
+            req.getRequestDispatcher("TeacherInfoServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     public void getStudentInfo(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("StudentInfoServlet").forward(req,resp);
-        } catch (ServletException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public void modifyTeacherInfo(HttpServletRequest req,HttpServletResponse resp){
-        try {
-            req.getRequestDispatcher("modifyInfoServlet").forward(req,resp);
+            req.getRequestDispatcher("StudentInfoServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void modifyStudentInfo(HttpServletRequest req,HttpServletResponse resp){
+    public void modifyTeacherInfo(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("modifyInfoServlet").forward(req,resp);
+            req.getRequestDispatcher("modifyInfoServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void getCourses(HttpServletRequest req,HttpServletResponse resp){
+    public void modifyStudentInfo(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("getCoursesServlet").forward(req,resp);
-        } catch (ServletException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public void joinCourse(HttpServletRequest req,HttpServletResponse resp){
-        try {
-            req.getRequestDispatcher("JoinCourseServlet").forward(req,resp);
+            req.getRequestDispatcher("modifyInfoServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void learnCourse(HttpServletRequest req,HttpServletResponse resp){
+    public void getCourses(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("LearnCourseServlet").forward(req,resp);
+            req.getRequestDispatcher("getCoursesServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void getLessons(HttpServletRequest req,HttpServletResponse resp){
+    public void joinCourse(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("GetLessonsServlet").forward(req,resp);
+            req.getRequestDispatcher("JoinCourseServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void getLessonContent(HttpServletRequest req,HttpServletResponse resp){
+    public void learnCourse(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("LearnLessonServlet").forward(req,resp);
-        } catch (ServletException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public void getLessonProblems(HttpServletRequest req,HttpServletResponse resp){
-        try {
-            req.getRequestDispatcher("GetLessonProblemsServlet").forward(req,resp);
+            req.getRequestDispatcher("LearnCourseServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void manageCourses(HttpServletRequest req,HttpServletResponse resp){
+    public void getLessons(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("ManageCoursesServlet").forward(req,resp);
+            req.getRequestDispatcher("GetLessonsServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void getDiscussion(HttpServletRequest req,HttpServletResponse resp){
+    public void getLessonContent(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("GetDiscussionServlet").forward(req,resp);
+            req.getRequestDispatcher("LearnLessonServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void sendDiscussion(HttpServletRequest req,HttpServletResponse resp){
+    public void getLessonProblems(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("SendDiscussionServlet").forward(req,resp);
+            req.getRequestDispatcher("GetLessonProblemsServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void getProblems(HttpServletRequest req,HttpServletResponse resp){
+    public void manageCourses(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("GetProblemsServlet").forward(req,resp);
+            req.getRequestDispatcher("ManageCoursesServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void commitProblems(HttpServletRequest req,HttpServletResponse resp){
+    public void getDiscussion(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("CommitProblemsServlet").forward(req,resp);
+            req.getRequestDispatcher("GetDiscussionServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void addProblem(HttpServletRequest req,HttpServletResponse resp){
+    public void sendDiscussion(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("AddProblemServlet").forward(req,resp);
+            req.getRequestDispatcher("SendDiscussionServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void teacherOpenProblems(HttpServletRequest req,HttpServletResponse resp){
+    public void getProblems(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("TeacherOpenProblemsServlet").forward(req,resp);
+            req.getRequestDispatcher("GetProblemsServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void learningSituation(HttpServletRequest req,HttpServletResponse resp){
+    public void commitProblems(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            req.getRequestDispatcher("LearningSituationServlet").forward(req,resp);
+            req.getRequestDispatcher("CommitProblemsServlet").forward(req, resp);
         } catch (ServletException | IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public void addProblem(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher("AddProblemServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void teacherOpenProblems(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher("TeacherOpenProblemsServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void learningSituation(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher("LearningSituationServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void getStudyRecord(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher("GetStudyRecordServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void getProblemRecord(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher("GetProblemRecordServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -138,9 +138,14 @@
                         //1. 拿到校对结果
                         console.log(result.data);
                         //2. 解析结果，有score和correctAnswers
-                        this.returnList = result.data.list;
-                        this.returnScore = result.data.score;
-                        this.return = true;
+                        if(result.data.list==null&&result.data.score==0){
+                            alert("已经作答，请勿重复提交");
+                        }else{
+                            this.returnList = result.data.list;
+                            this.returnScore = result.data.score;
+                            this.return = true;
+                            alert("提交成功");
+                        }
                     }
                 )
             },
