@@ -18,19 +18,17 @@
             <td>章名</td>
             <td>小节名</td>
         </tr>
-        <tr v-for="(lesson, index) in course.lessons">
-            <td>{{index}}</td>
+        <tr v-for="(lesson, index) in lessons">
+            <td>{{index + 1}}</td>
             <td>{{lesson.chapterName}}</td>
             <td>{{lesson.lessonName}}</td>
             <td><input type="button" value="开始学习" @click="learnLesson(lesson)"></td>
             <td><input type="button" value="展开题目" @click="openProblems(lesson)"></td>
         </tr>
     </table>
-    <div v-if="lessonContextVisible==true">
         小节内容：<br>
-        {{lesson}}<br><br>
+        <video id="showVideo" controls></video><br>
         小节题目：<br>
-    </div>
     <input type="button" value="展开讨论区" @click="Discussion()">
     <div v-if="visible.discussion==true">
         <h5>讨论区：</h5>
@@ -64,7 +62,7 @@
             </thead>
             <tbody>
             <tr v-for="(problem, index) in problems">
-                <td>{{index+1}}</td>
+                <td>{{index + 1}}</td>
                 <td>{{problem.context}}</td>
                 <td v-if="problem.type==1">
                     <!--                        选择题-->
@@ -88,7 +86,7 @@
         得分：{{returnScore}}
     </div>
 </div>
-<script>
+<script defer=true>
     new Vue({
         el: "#coursePage",
         data: {
@@ -98,12 +96,13 @@
                 courseName: null,
                 courseStartTime: null,
                 courseEndTime: null,
-                lessons: [],
             },
+            lessons: [],
             visible: {
                 discussion: false,
                 problems: false,
-                return: true
+                return: true,
+                video: false
             },
             lessonContextVisible: false,
             lesson: null,
@@ -116,7 +115,7 @@
         },
         methods: {
             openProblems(lesson) {
-                this.visible.return=false;
+                this.visible.return = false;
                 let toPost = {};
                 toPost.lessonID = lesson.lessonID;
                 toPost.courseID = this.course.courseID;
@@ -124,8 +123,7 @@
                 axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
                     (result) => {
                         this.visible.problems = true;
-                        this.problems=result.data;
-                        // console.log(this.problems);
+                        this.problems = result.data;
                     }
                 )
             },
@@ -138,9 +136,9 @@
                         //1. 拿到校对结果
                         console.log(result.data);
                         //2. 解析结果，有score和correctAnswers
-                        if(result.data.list==null&&result.data.score==0){
+                        if (result.data.list == null && result.data.score == 0) {
                             alert("已经作答，请勿重复提交");
-                        }else{
+                        } else {
                             this.returnList = result.data.list;
                             this.returnScore = result.data.score;
                             this.return = true;
@@ -150,22 +148,16 @@
                 )
             },
             learnLesson(lesson) {
+                //展示视频
+                let video = document.getElementById("showVideo");
+                console.log(video);
+                video.src=lesson.lessonContext;
+                //新增学习记录
                 let toPost = {};
-                toPost.method = "getLessonContent";
-                toPost.courseID = this.course.courseID;
-                toPost.lessonID = lesson.lessonID;
-                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                    (result) => {
-                        this.lesson = result.data;
-                        this.lessonContextVisible = true;
-                    }
-                );
-                toPost.method = "getLessonProblems";
-                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                    (result) => {
-                        this.problems = result.data;
-                    }
-                )
+                toPost.method="learnLesson";
+                toPost.courseID=this.course.courseID;
+                toPost.lessonID=lesson.lessonID;
+                axios.post("http://localhost:8080/week5/BaseServlet",toPost);
             },
             sendDiscussion() {
                 let toPost = {};
@@ -230,7 +222,7 @@
             toPost2.courseID = courseID;
             axios.post("BaseServlet", JSON.stringify(toPost2)).then(
                 (result) => {
-                    this.course.lessons = result.data;
+                    this.lessons = result.data;
                 }
             );
         }

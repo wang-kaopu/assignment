@@ -1,7 +1,9 @@
 package com.wkp.controller.student;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.wkp.controller.BaseServlet;
+import com.wkp.po.Lesson;
 import com.wkp.utils.JDBCUtils;
 
 import javax.servlet.ServletException;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @WebServlet("/GetLessonsServlet")
 public class GetLessonsServlet extends BaseServlet {
@@ -20,18 +23,24 @@ public class GetLessonsServlet extends BaseServlet {
         String requestString = (String) req.getAttribute("requestString");
         String courseID = (String) JSON.parseObject(requestString).get("courseID");
         //2. 查询
-        String lessons = null;
-        String querySql = "SELECT LESSONS FROM COURSES WHERE COURSEID = " + courseID + ";";
+//        String lessons = null;
+        String querySql = "SELECT * FROM LESSONS WHERE COURSEID = ?;";
+        ArrayList<JSONObject> lessons = new ArrayList<>();
         try {
-            ResultSet rs = JDBCUtils.QueryAndGetResultSet(querySql);
+            ResultSet rs = JDBCUtils.QueryAndGetResultSet(querySql,courseID);
             while(rs.next()){
-                lessons = rs.getString("lessons");
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("lessonName",rs.getString("lessonName"));
+                jsonObject.put("chapterName",rs.getString("chapterName"));
+                jsonObject.put("lessonID",rs.getString("lessonID"));
+                jsonObject.put("lessonContext",rs.getString("lessonContext"));
+                lessons.add(jsonObject);
             }
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
         }
         //3. 响应
-        resp.getWriter().write(lessons);
+        resp.getWriter().write(JSON.toJSONString(lessons));
     }
 }

@@ -122,7 +122,7 @@ public class StudentServiceImpl implements StudentService {
         return list;
     }
 
-    public void addStudyRecord(User user, Integer courseID, Integer lessonID) {
+    public void addStudyRecord(User user, Integer courseID, Object lessonID) {
         //1. 查询
         String studyrecord = null;
         String querySql = "SELECT STUDYRECORD FROM LESSONS WHERE COURSEID = ? AND LESSONID = ?;";
@@ -147,7 +147,8 @@ public class StudentServiceImpl implements StudentService {
         SimplePropertyPreFilter simplePropertyPreFilter = new SimplePropertyPreFilter(User.class, "personID", "name");
         list.add(user);
         String insertSql = "UPDATE LESSONS SET STUDYRECORD = ? WHERE COURSEID = ? AND LESSONID = ?;";
-        JDBCUtils.update(insertSql, JSON.toJSONString(list, simplePropertyPreFilter), courseID, lessonID);
+        String jsonString = JSON.toJSONString(list, simplePropertyPreFilter);
+        int update = JDBCUtils.update(insertSql, JSON.toJSONString(list, simplePropertyPreFilter), courseID, lessonID);
     }
 
     public List<Course> getStudyRecord(String personID) {
@@ -159,10 +160,12 @@ public class StudentServiceImpl implements StudentService {
             List<String> studentList = new ArrayList<>();
             while (rs.next()) {
                 studentList = JSON.parseArray(rs.getString("studentsList"), String.class);
-                for (String s : studentList) {
-                    if (s.equals(personID)) {
-                        courses.add(new Course(rs.getInt("courseID"), rs.getString("courseName")));
-                        break;
+                if (studentList != null) {
+                    for (String s : studentList) {
+                        if (s.equals(personID)) {
+                            courses.add(new Course(rs.getInt("courseID"), rs.getString("courseName")));
+                            break;
+                        }
                     }
                 }
             }
@@ -219,7 +222,7 @@ public class StudentServiceImpl implements StudentService {
                             String correctAnswer = rs.getString("correctAnswer");
                             int singleScore = answer.getSingleScore();
                             String answerContext = answer.getAnswer();
-                            list.add(new Problem(context,answerContext,lessonID,courseID,type,correctAnswer,singleScore));
+                            list.add(new Problem(context, answerContext, lessonID, courseID, type, correctAnswer, singleScore));
                         }
                     }
                 }

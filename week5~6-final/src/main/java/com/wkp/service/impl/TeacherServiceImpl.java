@@ -16,12 +16,15 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Map<String, Integer> addCourse(Course course, User currentUser) {
+        //1. 获取当前用户ID
         this.currentUser = currentUser;
+        //2. 生成课程ID
         Random random = new Random();
         course.setCourseID(random.nextInt(9000) + 1000);
-        System.out.println("Impl:" + course.getCourseID());
+//        System.out.println("Impl:" + course.getCourseID());
         course.setTeacherID(currentUser.getPersonID());
         course.setTeacherName(currentUser.getName());
+        //3. 获取课程参数
         int courseID = course.getCourseID();
         String courseName = course.getCourseName();
         String courseDescription = course.getCourseDescription();
@@ -30,27 +33,13 @@ public class TeacherServiceImpl implements TeacherService {
         int studentNumberLimitation = course.getStudentNumberLimitation();
         String teacherID = currentUser.getPersonID();
         String teacherName = currentUser.getName();
-        List<Lesson> lessons = course.getLessons();
-
-        String lessonInsertSql =
-                "INSERT IGNORE INTO LESSONS (COURSEID, LESSONID, LESSONNAME, LESSONCONTEXT, CHAPTERNAME, COURSENAME) VALUE (?,?,?,?,?,?);";
-        int lessonExecute = 0;
-        for (Lesson lesson : lessons) {
-            int lessonID = random.nextInt(9000) + 1000;
-            lesson.setLessonID(lessonID);
-            String chapterName = lesson.getChapterName();
-            String lessonName = lesson.getLessonName();
-            String lessonContext = lesson.getLessonContext();
-            lessonExecute += JDBCUtils.update(lessonInsertSql, courseID, lessonID, lessonName, lessonContext, chapterName, courseName);
-        }
-
+        //4. 更新数据库表
         String courseInsertSql =
-                "INSERT IGNORE INTO COURSES (LESSONS, COURSEID, COURSENAME, COURSEDESCRIPTION, COURSESTARTTIME,COURSEENDTIME,STUDENTNUMBERLIMITATION,TEACHERID,TEACHERNAME) VALUE (?,?,?,?,?,?,?,?,?);";
-        int courseExecute = JDBCUtils.update(courseInsertSql, JSON.toJSONString(lessons), courseID, courseName, courseDescription, courseStartTime, courseEndTime, studentNumberLimitation, teacherID, teacherName);
-
+                "INSERT IGNORE INTO COURSES (COURSEID, COURSENAME, COURSEDESCRIPTION, COURSESTARTTIME,COURSEENDTIME,STUDENTNUMBERLIMITATION,TEACHERID,TEACHERNAME) VALUE (?,?,?,?,?,?,?,?);";
+        int courseExecute = JDBCUtils.update(courseInsertSql, courseID, courseName, courseDescription, courseStartTime, courseEndTime, studentNumberLimitation, teacherID, teacherName);
+        //5. 返回更新结果
         Map<String, Integer> executeMap = new HashMap<>();
         executeMap.put("courseExecute", courseExecute);
-        executeMap.put("lessonExecute", lessonExecute);
         return executeMap;
     }
 

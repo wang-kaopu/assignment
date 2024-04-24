@@ -39,7 +39,14 @@ public class CommitProblemsServlet extends BaseServlet {
             ResultSet rs = JDBCUtils.QueryAndGetResultSet(queryAnswerList, courseID, lessonID);
             while (rs.next()){
                 String answerList = rs.getString("answerList");
-                for (Answer answer : JSON.parseArray(answerList, Answer.class)) {
+                if(answerList==null){
+                    answerList=new String();
+                }
+                List<Answer> answers = JSON.parseArray(answerList, Answer.class);
+                if(answers==null){
+                    answers = new ArrayList<>();
+                }
+                for (Answer answer : answers) {
                     if(answer.getPersonID()==Integer.valueOf((String) ((Student)req.getSession().getAttribute("currentStudent")).getPersonID())){
                         toRecord=false;
                     }
@@ -53,17 +60,26 @@ public class CommitProblemsServlet extends BaseServlet {
             String sql = "SELECT * FROM PROBLEMS WHERE COURSEID = ? AND LESSONID = ?;";
             StudentServiceImpl studentService = new StudentServiceImpl();
             List<Problem> list = studentService.queryCorrectAnswers(sql, courseID, lessonID);
+//            for (Problem problem : list) {
+//                System.out.println(problem);
+//            }
             //3. 评分并记录
             int score = 0;
+            int allScore = 0;
             for (int i = 0; i < problems.size(); i++) {
                 //判断是否正确
                 int singleScore = 0;
-                if (problems.get(i).getType() == 1 && (!(problems.get(i).getAnswer().equals(list.get(i).getAnswer())))) {
+                //类型为选择题并且选错了，则不加分
+                Integer inputAnswer = Integer.valueOf(problems.get(i).getAnswer());
+                Integer correctAnswer = Integer.valueOf(list.get(i).getCorrectAnswer());
+                System.out.println("correct:"+correctAnswer);
+                if (problems.get(i).getType() == 1 && inputAnswer!=correctAnswer) {
                     score += 0;
                 } else {
                     score += 1;
                     singleScore+=1;
                 }
+                allScore+=1;
                 //记录答题情况
                 Problem currentProblem = problems.get(i);
                 String context = currentProblem.getContext();

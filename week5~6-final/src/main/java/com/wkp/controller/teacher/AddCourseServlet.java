@@ -19,24 +19,20 @@ import java.util.Map;
 public class AddCourseServlet extends BaseServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //1. 获取请求
         String requestString = (String) req.getAttribute("requestString");
         Course course = JSON.parseObject(requestString, Course.class);
+        //2. 获取相关信息
         User currentUser = (User) req.getSession().getAttribute("currentUser");
         TeacherService teacherService = new TeacherServiceImpl();
+        //3. 更新
         Map<String, Integer> addCourseResult = teacherService.addCourse(course, currentUser);
         HashMap<String, Integer> responseMap = new HashMap<>();
+        //4. 响应
         Integer courseExecute = addCourseResult.get("courseExecute");
-        Integer lessonExecute = addCourseResult.get("lessonExecute");
-        if (courseExecute > 0 && lessonExecute > 0) {
-            System.out.println("添加成功");
-        } else {
-            System.out.println("添加失败");
-        }
         responseMap.put("courseExecute", courseExecute);
-        responseMap.put("lessonExecute", lessonExecute);
         String responseString = JSON.toJSONString(responseMap);
         Writer writer = resp.getWriter();
         writer.write(responseString);
     }
-
 }

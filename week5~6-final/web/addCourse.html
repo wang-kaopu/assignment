@@ -9,35 +9,12 @@
 <body>
 <h4>添加课程</h4>
 <div id="addCourse">
-    课程名称：<input type="text" v-model="courseName">{{courseName}}<br>
-    课程介绍：<input type="text" v-model="courseDescription">{{courseDescription}}<br>
-    开课时间：<input type="datetime-local" v-model="courseStartTime">{{courseStartTime}}<br>
-    结课时间：<input type="datetime-local" v-model="courseEndTime">{{courseEndTime}}<br>
-    报名人数限制：<input type="number" v-model="studentNumberLimitation">{{studentNumberLimitation}}<br>
-    添加课程内容：<br>
-    <form>
-        所属章名：<input type="text" v-model="chapterName"><br>
-        小节名称：<input type="text" v-model="lessonName"><br>
-        小节内容：<input type="text" v-model="lessonContext"><br>
-    </form>
-    <input type="button" value="添加小节" @click="addNewLessonToLessons()"><br>
-    当前课程内容：
-    <table border="1">
-        <thead>
-        <tr>
-            <th>所属章名</th>
-            <th>小节名称</th>
-            <th>小节内容</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="(lsn, index) in lessons">
-            <td>{{lsn.chapterName}}</td>
-            <td>{{lsn.lessonName}}</td>
-            <td>{{lsn.lessonContext}}</td>
-        </tr>
-        </tbody>
-    </table>
+    课程名称：<input type="text" v-model="courseName"><br>
+    课程介绍：<input type="text" v-model="courseDescription"><br>
+    开课时间：<input type="datetime-local" v-model="courseStartTime"><br>
+    结课时间：<input type="datetime-local" v-model="courseEndTime"><br>
+    报名人数限制：<input type="number" v-model="studentNumberLimitation"><br>
+    <br>
     <input type="button" value="提交课程" @click="addCourse()">
 </div>
 </body>
@@ -51,45 +28,50 @@
             courseStartTime: null,
             courseEndTime: null,
             studentNumberLimitation: null,
-            lessons: [],
-
-            chapterName: null,
-            lessonName: null,
-            lessonContext: null
+            visible:{
+                addReturn:false
+            }
         },
         methods: {
+            uploadNewLesson(){
+                let newLesson = {};
+                newLesson.chapterName = this.$refs.inputChapterName;
+                newLesson.lessonName = this.$refs.inputLessonName;
+                newLesson.method="addNewLesson";
+                axios.post("http://localhost:8080/week5/BaseServlet",newLesson).then(
+                    (result)=> {
+                        console.log(result.data);
+                    }
+                );
+                const file = this.$refs.lessonVideo.files.file[0];
+                const formData = new FormData();
+                formData.append(file);
+                axios.post("http://localhost:8080/UploadServlet",formData, {
+                    "Content-Type": "multipart/form-data"
+                }).then(
+                    (result)=>{
+                        console.log(result.data);
+                    }
+                )
+            },
             addCourse: function () {
-                let courseContextString = JSON.stringify(this.lessons);
                 let data = {};
                 data.courseName = this.courseName;
                 data.courseDescription = this.courseDescription;
                 data.courseStartTime = this.courseStartTime;
                 data.courseEndTime = this.courseEndTime;
                 data.studentNumberLimitation = this.studentNumberLimitation;
-
-                data.lessons = this.lessons;
                 data.method = "addCourse";
-                let dataString = JSON.stringify(data);
-                axios.post("http://localhost:8080/week5/BaseServlet", dataString).then(
+                axios.post("http://localhost:8080/week5/BaseServlet", data).then(
                     (result) => {
-                        if (result.status === 200 && result.data.courseExecute > 0 && result.data.lessonExecute > 0) {
-                            alert("添加成功，添加了" + result.data.courseExecute + "个课程，" + result.data.lessonExecute + "个小节。");
-                            window.location.href = "http://localhost:8080/week5/teacherHomepage.html";
+                        if (result.status === 200 && result.data.courseExecute > 0) {
+                            alert("添加课程成功");
                         } else {
                             alert("添加失败，请重试")
                         }
                     }
                 )
             },
-            addNewLessonToLessons: function () {
-                let lesson = {};
-                lesson.courseID = this.courseID;
-                lesson.chapterName = this.chapterName;
-                lesson.lessonName = this.lessonName;
-                lesson.lessonContext = this.lessonContext;
-                this.lessons.push(lesson);
-                this.$forceUpdate();
-            }
         }
     })
 </script>

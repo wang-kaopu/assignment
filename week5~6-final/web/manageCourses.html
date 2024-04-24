@@ -26,6 +26,7 @@
             <td><input type="button" value="进入讨论" @click="Discussion(course)"></td>
             <td><input type="button" value="学习情况" @click="learningSituation(course)"></td>
             <td><input type="button" value="题目页面" @click="toProblems(course)"></td>
+            <td><input type="button" value="添加小节" @click="toAddLesson(course)"></td>
         </tr>
     </table>
     <div v-if="visible.discussion==true">
@@ -85,6 +86,10 @@
                 lessons: null
             },
             methods: {
+                toAddLesson(course){
+                    window.location.href = "http://localhost:8080/week5/addLesson.html?courseID=" + course.courseID;
+                    // axios.get("http://localhost:8080/week5/addLesson.html",course.courseID);
+                },
                 toProblems(course) {
                     window.location.href = "http://localhost:8080/week5/problems.html?courseID=" + course.courseID;
                 },

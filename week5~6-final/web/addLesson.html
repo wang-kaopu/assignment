@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加小节</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="add">
+    <h5>添加课程内容：</h5>
+    <form>
+        所属章名：<input type="text" v-model="chapterName"><br>
+        小节名称：<input type="text" v-model="lessonName"><br>
+        上传文件：<input type="file" ref="lessonVideo"><br>
+        <input type="button" @click="addLesson()" value="确定添加">
+    </form>
+</div>
+<script>
+    new Vue({
+            el: "#add",
+            mounted:function () {
+                //1. 获得url中的courseID
+                let url = window.location.href;
+                let dz_url = url.split('#')[0];                //获取#/之前的字符串
+                let cs = dz_url.split('?')[1];                //获取?之后的参数字符串
+                let cs_arr = cs.split('=');                    //参数字符串分割为数组
+                let courseID = cs_arr[1];
+                this.courseID = courseID;
+            },
+            data: {
+                chapterName: null,
+                lessonName: null,
+                courseID: null,
+                newPath: null,
+                lessonID: null
+            },
+            methods: {
+                addLesson() {
+                    //上传小节信息
+                    let lesson = {};
+                    lesson.courseID = this.courseID;
+                    lesson.chapterName = this.chapterName;
+                    lesson.lessonName = this.lessonName;
+                    lesson.method = "addNewLessonInfo";
+                    console.log(lesson);
+                    axios.post("http://localhost:8080/week5/BaseServlet", lesson).then(
+                        (result) => {
+                            console.log(result.data);
+                            if (result.data.update > 0) {
+                                alert("添加成功");
+                                this.lessonID = result.data.lessonID;
+                            } else {
+                                alert("添加失败");
+                            }
+                        }
+                    )
+                    //上传文件
+                    const file = this.$refs.lessonVideo.files[0];
+                    const formData = new FormData();
+                    formData.append("lessonVideo", file);
+                    axios.post("http://localhost:8080/week5/UploadServlet", formData, this.courseID, {
+                        "Content-Type": "multipart/form-data"
+                    }).then(
+                        () => {
+                            window.location.href = "http://localhost:8080/week5/addLesson.html?courseID=" + this.courseID;
+                        }
+                    )
+                }
+            }
+        }
+    )
+</script>
+</body>
+</html>

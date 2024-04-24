@@ -253,4 +253,20 @@ public class BaseServlet extends HttpServlet {
         }
     }
 
+    public void addNewLessonInfo(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher("AddNewLessonInfoServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void learnLesson(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher("LearnLessonServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
