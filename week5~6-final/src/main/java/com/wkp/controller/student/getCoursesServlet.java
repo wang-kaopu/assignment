@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ public class getCoursesServlet extends BaseServlet {
                         break;
                     }
                 }
-                if (isInvolved) {
+                if (isInvolved && LocalDateTime.now().isAfter(c.getCourseStartTime())&&LocalDateTime.now().isBefore(c.getCourseEndTime())) {
                     learning.add(c);
                 } else {
                     other.add(c);

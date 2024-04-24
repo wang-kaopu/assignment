@@ -45,6 +45,7 @@
             <td>序号</td>
             <td>题目</td>
             <td>参考答案</td>
+            <td>正确率</td>
             <td>作答列表（学号：答案）</td>
         </tr>
         </thead>
@@ -62,7 +63,8 @@
                 <div v-else-if="problem.type==2">
                     {{problem.correctAnswer}}
                 </div>
-                </td>
+            </td>
+            <td>{{problem.correctRate}}</td>
             <td>
                 <div v-for="(answer,index) in problem.answerList">
                     {{answer.personID}}:{{answer.answer}}<br>

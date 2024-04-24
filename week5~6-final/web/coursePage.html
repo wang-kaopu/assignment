@@ -75,15 +75,18 @@
                     <!--                        简答题-->
                     <input type="text" v-model="problem.answer">
                 </td>
-                <td v-if="visible.return==true" v-for="(returnProblem, index) in returnList">
-                    <!--                    参考答案-->
-                    {{returnList.correctAnswer}}
+                <td v-if="visible.return==true">
+                    <div v-if="returnList[index].correctAnswer==1">A</div>
+                    <div v-if="returnList[index].correctAnswer==2">B</div>
+                    <div v-if="returnList[index].correctAnswer==3">C</div>
+                    <div v-if="returnList[index].correctAnswer==4">D</div>
                 </td>
             </tr>
             </tbody>
         </table>
         <input type="button" value="提交答案" @click="commitProblems()"><br>
-        得分：{{returnScore}}
+        得分：{{returnScore}}<br>
+        正确率：{{returnCorrectRate}}
     </div>
 </div>
 <script defer=true>
@@ -111,7 +114,8 @@
             toSend: null,
             currentCourse: null,
             returnList: null,
-            returnScore: null
+            returnScore: null,
+            returnCorrectRate:null
         },
         methods: {
             openProblems(lesson) {
@@ -131,21 +135,25 @@
                 let toPost = {};
                 toPost.problems = JSON.stringify(this.problems)
                 toPost.method = "commitProblems";
-                axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
-                    (result) => {
-                        //1. 拿到校对结果
-                        console.log(result.data);
-                        //2. 解析结果，有score和correctAnswers
-                        if (result.data.list == null && result.data.score == 0) {
-                            alert("已经作答，请勿重复提交");
-                        } else {
-                            this.returnList = result.data.list;
-                            this.returnScore = result.data.score;
-                            this.return = true;
-                            alert("提交成功");
+                let toCommit=true;
+                if(toCommit){
+                    axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
+                        (result) => {
+                            //1. 拿到校对结果
+                            console.log(result.data);
+                            //2. 解析结果，有score和correctAnswers和correctRate
+                            if (result.data.list == null && result.data.score == 0) {
+                                alert("已经作答，请勿重复提交");
+                            } else {
+                                this.returnList = result.data.list;
+                                this.returnScore = result.data.score;
+                                this.returnCorrectRate = result.data.correctRate;
+                                this.visible.return = true;
+                                alert("提交成功");
+                            }
                         }
-                    }
-                )
+                    )
+                }
             },
             learnLesson(lesson) {
                 //展示视频

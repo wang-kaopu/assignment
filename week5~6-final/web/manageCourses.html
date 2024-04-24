@@ -99,7 +99,6 @@
                     toPost.courseID = course.courseID;
                     axios.post("http://localhost:8080/week5/BaseServlet", toPost).then(
                         (result) => {
-                            //lessons[lesson{lessonID,records}]
                             this.lessons = result.data;
                             console.log(result.data);
                         }
