@@ -1,6 +1,6 @@
-请求地址上文http://localhost:8080/week5
+1. 视频形式课程，使线上学习更生动真实，易于接受。
 
-post地址：http://localhost:8080/week5/BaseServlet
+2. 课程讨论区留言板，促进交流学习，营造互助氛围。
 
 数据库名week5
 
