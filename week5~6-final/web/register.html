@@ -44,7 +44,7 @@
                 user.studentName=this.studentName;
                 user.studentGrade=this.studentGrade;
                 let userString = JSON.stringify(user);
-                console.log(userString);
+                // console.log(userString);
                 axios.post("http://localhost:8080/week5/BaseServlet",userString).then(
                     (result)=>{
                     //     console.log(result);

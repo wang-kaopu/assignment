@@ -13,6 +13,15 @@ public class Problem {
     private String correctAnswer;
     private ArrayList<Answer> answerList;
     private int singleScore;
+    private String correctRate;
+
+    public String getCorrectRate() {
+        return correctRate;
+    }
+
+    public void setCorrectRate(String correctRate) {
+        this.correctRate = correctRate;
+    }
 
     public Problem(String context, String answer, int lessonID, int courseID, int type, String correctAnswer, int singleScore) {
         this.context = context;

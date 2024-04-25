@@ -14,6 +14,7 @@
         <input type="button" value="浏览课程" @click="toBrowseCourses()">
         <input type="button" value="个人信息" @click="toStudentInfo()">
         <input type="button" value="学习轨迹" @click="toStudyTrace()">
+<!--        <input type="button" value="聊天室" @click="toChatRoom()">-->
     </div>
 </body>
 <script>
@@ -31,7 +32,10 @@
             },
             toStudyTrace:function (){
                 window.location.href="http://localhost:8080/week5/studyTrace.html";
-            }
+            },
+            // toChatRoom:function (){
+            //     window.location.href="http://localhost:8080/week5/chatRoom.html";
+            // }
         }
     })
 </script>

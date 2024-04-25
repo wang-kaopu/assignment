@@ -269,4 +269,12 @@ public class BaseServlet extends HttpServlet {
         }
     }
 
+    public void sendMessage(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            req.getRequestDispatcher("SendMessageServlet").forward(req, resp);
+        } catch (ServletException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

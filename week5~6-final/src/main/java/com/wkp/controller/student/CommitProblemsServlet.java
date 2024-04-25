@@ -15,8 +15,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,52 +36,53 @@ public class CommitProblemsServlet extends BaseServlet {
         int lessonID = first.getLessonID();
         //检查是否已经有作答记录
         boolean toRecord = true;
-        String queryAnswerList  = "SELECT * FROM PROBLEMS WHERE COURSEID = ? AND LESSONID = ?;";
+        String queryAnswerList = "SELECT * FROM PROBLEMS WHERE COURSEID = ? AND LESSONID = ?;";
         try {
             ResultSet rs = JDBCUtils.QueryAndGetResultSet(queryAnswerList, courseID, lessonID);
-            while (rs.next()){
+            while (rs.next()) {
                 String answerList = rs.getString("answerList");
-                if(answerList==null){
-                    answerList=new String();
+                if (answerList == null) {
+                    answerList = new String();
                 }
                 List<Answer> answers = JSON.parseArray(answerList, Answer.class);
-                if(answers==null){
+                if (answers == null) {
                     answers = new ArrayList<>();
                 }
                 for (Answer answer : answers) {
-                    if(answer.getPersonID()==Integer.valueOf((String) ((Student)req.getSession().getAttribute("currentStudent")).getPersonID())){
-                        toRecord=false;
+                    if (answer == null || answer.getPersonID() == Integer.valueOf((String) ((Student) req.getSession().getAttribute("currentStudent")).getPersonID())) {
+                        toRecord = false;
                     }
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if(toRecord){
+        if (toRecord) {
             //2. 查询
             String sql = "SELECT * FROM PROBLEMS WHERE COURSEID = ? AND LESSONID = ?;";
             StudentServiceImpl studentService = new StudentServiceImpl();
             List<Problem> list = studentService.queryCorrectAnswers(sql, courseID, lessonID);
-//            for (Problem problem : list) {
-//                System.out.println(problem);
-//            }
             //3. 评分并记录
             int score = 0;
-            int allScore = 0;
+            int totalScore = 0;
             for (int i = 0; i < problems.size(); i++) {
                 //判断是否正确
                 int singleScore = 0;
                 //类型为选择题并且选错了，则不加分
-                Integer inputAnswer = Integer.valueOf(problems.get(i).getAnswer());
-                Integer correctAnswer = Integer.valueOf(list.get(i).getCorrectAnswer());
-                System.out.println("correct:"+correctAnswer);
-                if (problems.get(i).getType() == 1 && inputAnswer!=correctAnswer) {
-                    score += 0;
+                if (problems.get(i).getType() == 1) {
+                    Integer inputAnswer = Integer.valueOf(problems.get(i).getAnswer());
+                    Integer correctAnswer = Integer.valueOf(list.get(i).getCorrectAnswer());
+                    if (inputAnswer != correctAnswer) {
+                        score += 0;
+                    } else {
+                        score += 1;
+                        singleScore += 1;
+                    }
                 } else {
                     score += 1;
-                    singleScore+=1;
+                    singleScore += 1;
                 }
-                allScore+=1;
+                totalScore += 1;
                 //记录答题情况
                 Problem currentProblem = problems.get(i);
                 String context = currentProblem.getContext();
@@ -89,29 +92,35 @@ public class CommitProblemsServlet extends BaseServlet {
                 try {
                     ResultSet rs = JDBCUtils.QueryAndGetResultSet(querySql, courseID, lessonID, context);
                     while (rs.next()) {
-                        answerList=rs.getString("answerList");
+                        answerList = rs.getString("answerList");
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 List<Answer> answers = JSON.parseArray(answerList, Answer.class);
-                if(answers==null){
+                if (answers == null) {
                     answers = new ArrayList<>();
                 }
-                answers.add(new Answer(currentProblem.getAnswer(), Integer.parseInt(((User)req.getSession().getAttribute("currentUser")).getPersonID()),singleScore));
+                answers.add(new Answer(currentProblem.getAnswer(), Integer.parseInt(((User) req.getSession().getAttribute("currentUser")).getPersonID()), singleScore));
                 String newAnswers = JSON.toJSONString(answers);
                 String updateSql = "UPDATE PROBLEMS SET ANSWERLIST = ? WHERE COURSEID = ? AND LESSONID = ? AND CONTEXT = ?;";
-                JDBCUtils.update(updateSql,newAnswers,courseID,lessonID,context);
+                JDBCUtils.update(updateSql, newAnswers, courseID, lessonID, context);
             }
+            //计算正确率，转换为百分比
+            BigDecimal correctRate = BigDecimal.valueOf(score).divide(BigDecimal.valueOf(totalScore));
+            correctRate.setScale(2, BigDecimal.ROUND_HALF_UP);
+            DecimalFormat decimalFormat = new DecimalFormat("0.00%");
+            String correctRateString = decimalFormat.format(correctRate);
             //5. 响应
             HashMap<Object, Object> map = new HashMap<>();
             map.put("list", list);
             map.put("score", score);
+            map.put("correctRate", correctRateString);
             resp.getWriter().write(JSON.toJSONString(map));
-        }else{
+        } else {
             HashMap<Object, Object> map = new HashMap<>();
-            map.put("list",null);
-            map.put("score",0);
+            map.put("list", null);
+            map.put("score", 0);
             resp.getWriter().write(JSON.toJSONString(map));
         }
     }
