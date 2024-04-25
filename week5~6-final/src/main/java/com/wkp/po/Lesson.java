@@ -10,18 +10,18 @@ public class Lesson {
     private String lessonName;
     private int lessonID;//四位数
     private String lessonContext;
-    private List<String> studyRecord;
+    private List<User> studyRecord;
 
-    public List<String> getStudyRecord() {
+    public List<User> getStudyRecord() {
         return studyRecord;
     }
 
-    public Lesson(String lessonName, List<String> studyRecord) {
+    public Lesson(String lessonName, List<User> studyRecord) {
         this.lessonName = lessonName;
         this.studyRecord = studyRecord;
     }
 
-    public void setStudyRecord(List<String> studyRecord) {
+    public void setStudyRecord(List<User> studyRecord) {
         this.studyRecord = studyRecord;
     }
 
@@ -75,11 +75,12 @@ public class Lesson {
     @Override
     public String toString() {
         return "Lesson{" +
-                "courseID='" + courseID + '\'' +
+                "courseID=" + courseID +
                 ", chapterName='" + chapterName + '\'' +
                 ", lessonName='" + lessonName + '\'' +
                 ", lessonID=" + lessonID +
                 ", lessonContext='" + lessonContext + '\'' +
+                ", studyRecord=" + studyRecord +
                 '}';
     }
 }

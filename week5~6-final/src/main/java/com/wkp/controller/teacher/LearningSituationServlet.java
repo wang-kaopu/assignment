@@ -5,7 +5,9 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.filter.SimplePropertyPreFilter;
 import com.wkp.controller.BaseServlet;
 import com.wkp.po.Lesson;
+import com.wkp.po.Student;
 import com.wkp.po.StudyRecord;
+import com.wkp.po.User;
 import com.wkp.utils.JDBCUtils;
 
 import javax.servlet.ServletException;
@@ -34,16 +36,14 @@ public class LearningSituationServlet extends BaseServlet {
         try {
             rs = JDBCUtils.QueryAndGetResultSet(querySql, courseID);
             while (rs.next()) {
-                List<String> studyRecord = JSON.parseArray(rs.getString("studyRecord"), String.class);
+                List<User> studyRecord = JSON.parseArray(rs.getString("studyRecord"), User.class);
                 String lessonName = rs.getString("lessonName");
                 lessons.add(new Lesson(lessonName, studyRecord));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        //3. 转换
-        SimplePropertyPreFilter simplePropertyPreFilter = new SimplePropertyPreFilter(Lesson.class, "lessonName", "studyRecord");
-        String jsonString = JSON.toJSONString(lessons, simplePropertyPreFilter);
+        String jsonString = JSON.toJSONString(lessons);
         //4. 响应
         resp.getWriter().write(jsonString);
     }
