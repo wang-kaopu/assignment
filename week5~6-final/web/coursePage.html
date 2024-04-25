@@ -192,8 +192,8 @@
                 let toPost3 = {};
                 toPost3.method = "getDiscussion";
                 toPost3.courseID = this.course.courseID;
-                console.log(this.course);
-                console.log(this.course.courseID)
+                // console.log(this.course);
+                // console.log(this.course.courseID)
                 this.currentCourse = this.course;
                 axios.post("http://localhost:8080/week5/BaseServlet", toPost3).then(
                     (result) => {

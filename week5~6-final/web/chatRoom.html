@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>聊天室</title>
+    <script src="js/axios.js"></script>
+    <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="chatRoom">
+    <input type="text" v-model="context">
+    <input type="button" @click="sendMessage">
+    <div v-for="(message, index)in messages">
+        {{message.name}}-{{message.time}}:<br>
+        {{message.context}}<br>
+    </div>
+    messages
+</div>
+<script>
+    new Vue({
+        el: "#chatRoom",
+        data:{
+            context:null,
+            messages:[]
+        },
+        methods:{
+            sendMessage(){
+                let toPost = {};
+                toPost.method = "sendMessage";
+                toPost.context=this.context;
+                toPost.port=10086
+                axios.post("http://localhost:8080/week5/BaseServlet",toPost).then(
+                    (result)=>{
+                        this.messages.push(result.data.sentMessage);
+                    }
+                );
+            }
+        },
+        mounted(){
+            setInterval(receiveMessage,1000);
+        }
+    })
+    function receiveMessage(){
+        let toPost = {};
+        toPost.method="receiveMessage";
+        axios.post("http://localhost:8080/week5/BaseServlet",toPost).then(
+            (result)=>{
+                this.messages.push(result.data);
+            }
+        )
+    }
+</script>
+</body>
+</html>

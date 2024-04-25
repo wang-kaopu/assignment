@@ -33,27 +33,27 @@
             }
         },
         methods: {
-            uploadNewLesson(){
-                let newLesson = {};
-                newLesson.chapterName = this.$refs.inputChapterName;
-                newLesson.lessonName = this.$refs.inputLessonName;
-                newLesson.method="addNewLesson";
-                axios.post("http://localhost:8080/week5/BaseServlet",newLesson).then(
-                    (result)=> {
-                        console.log(result.data);
-                    }
-                );
-                const file = this.$refs.lessonVideo.files.file[0];
-                const formData = new FormData();
-                formData.append(file);
-                axios.post("http://localhost:8080/UploadServlet",formData, {
-                    "Content-Type": "multipart/form-data"
-                }).then(
-                    (result)=>{
-                        console.log(result.data);
-                    }
-                )
-            },
+            // uploadNewLesson(){
+            //     let newLesson = {};
+            //     newLesson.chapterName = this.$refs.inputChapterName;
+            //     newLesson.lessonName = this.$refs.inputLessonName;
+            //     newLesson.method="addNewLesson";
+            //     axios.post("http://localhost:8080/week5/BaseServlet",newLesson).then(
+            //         (result)=> {
+            //             console.log(result.data);
+            //         }
+            //     );
+            //     const file = this.$refs.lessonVideo.files.file[0];
+            //     const formData = new FormData();
+            //     formData.append(file);
+            //     axios.post("http://localhost:8080/UploadServlet",formData, {
+            //         "Content-Type": "multipart/form-data"
+            //     }).then(
+            //         (result)=>{
+            //             console.log(result.data);
+            //         }
+            //     )
+            // },
             addCourse: function () {
                 let data = {};
                 data.courseName = this.courseName;
